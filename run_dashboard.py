@@ -1,0 +1,213 @@
+"""
+A7DO — Live Introspection Dashboard
+Manual Tick Control (Authoritative Time Boundary)
+"""
+
+import importlib.util
+import time
+
+import streamlit as st
+from pathlib import Path
+
+# --------------------------------------------------
+# PROJECT ROOT
+# --------------------------------------------------
+ROOT = Path(__file__).resolve().parent
+
+def load_module(name: str, relative_path: str):
+    path = ROOT / relative_path
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+# --------------------------------------------------
+# LOAD WORLD
+# --------------------------------------------------
+world_time_mod = load_module("world_time", "09_WORLD_MODEL/time.py")
+world_state_mod = load_module("world_state", "09_WORLD_MODEL/world_state.py")
+world_env_mod = load_module("world_env", "09_WORLD_MODEL/environments/world.py")
+
+WorldTime = world_time_mod.WorldTime
+WorldState = world_state_mod.WorldState
+World = world_env_mod.World
+
+# --------------------------------------------------
+# LOAD ENGLISH LEARNING
+# --------------------------------------------------
+english_mod = load_module(
+    "english_learning",
+    "12_INTERFACE_AND_OBSERVABILITY/english_learning.py",
+)
+EnglishLearning = english_mod.EnglishLearning
+
+# --------------------------------------------------
+# LOAD LIFE LOOP
+# --------------------------------------------------
+life_loop_mod = load_module(
+    "life_loop",
+    "00_CORE_EXISTENCE/bootstrap/life_loop.py"
+)
+LifeLoop = life_loop_mod.LifeLoop
+
+# --------------------------------------------------
+# SESSION STATE
+# --------------------------------------------------
+if "life" not in st.session_state:
+    world_time = WorldTime()
+    world_state = WorldState(default_place="house")
+    st.session_state.world_env = World.create(world_state=world_state)
+    st.session_state.life = LifeLoop(world_time, world_state)
+
+if "run_ticks_remaining" not in st.session_state:
+    st.session_state.run_ticks_remaining = 0
+
+if "dashboard_messages" not in st.session_state:
+    st.session_state.dashboard_messages = []
+
+life = st.session_state.life
+
+# --------------------------------------------------
+# ENGLISH LEARNING STATE
+# --------------------------------------------------
+english_learning = EnglishLearning(st.session_state)
+
+
+def energy_gate() -> str:
+    if not life.pulse.is_alive():
+        return "blocked: pulse inactive"
+    try:
+        life.physics.allow(english_learning.energy_cost, life.energy.level())
+    except Exception:
+        return "blocked: insufficient energy"
+    life.energy.spend(english_learning.energy_cost)
+    return "ok"
+
+# --------------------------------------------------
+# SIDEBAR CONTROLS
+# --------------------------------------------------
+st.sidebar.title("🧠 A7DO Control")
+
+if st.sidebar.button("🔘 Tick (1)"):
+    life.tick()
+    english_learning.advance(energy_gate)
+
+run_n = st.sidebar.number_input(
+    "Run N ticks",
+    min_value=1,
+    max_value=100,
+    value=5,
+    step=1
+)
+
+if st.sidebar.button("▶️ Run N"):
+    st.session_state.run_ticks_remaining = run_n
+
+if st.sidebar.button("⏸ Pause"):
+    st.session_state.run_ticks_remaining = 0
+
+# --------------------------------------------------
+# RUN LOOP
+# --------------------------------------------------
+if st.session_state.run_ticks_remaining > 0:
+    life.tick()
+    english_learning.advance(energy_gate)
+    st.session_state.run_ticks_remaining -= 1
+    time.sleep(0.05)
+    st.rerun()
+
+# --------------------------------------------------
+# DASHBOARD DISPLAY
+# --------------------------------------------------
+st.title("🧠 A7DO — Live Introspection Dashboard")
+
+st.subheader("🌍 World / Body State")
+st.json({
+    "energy": life.energy.level(),
+    "strain": life.overload.strain,
+    "last_action": getattr(life.motor, "last_action", None),
+    "lifecycle_stage": life.lifecycle.stage,
+    "time_internal": life.internal_time,
+    "time_real": life.clock.now(),
+    "time_world": life.world_time.t,
+})
+
+st.subheader("🧠 Recent Memory")
+st.json(life.memory.recent(5))
+
+st.subheader("❤️ Pulse")
+st.write("Alive:", life.pulse.is_alive())
+
+st.subheader("⌨️ Keyboard Message")
+
+def send_dashboard_message() -> None:
+    message_text = st.session_state.get("dashboard_message_input", "")
+    cleaned_message = message_text.strip()
+    if cleaned_message:
+        st.session_state.dashboard_messages.append(
+            {
+                "timestamp": life.clock.now(),
+                "message": cleaned_message,
+            }
+        )
+    st.session_state.dashboard_message_input = ""
+
+
+st.text_input("Type a message for the dashboard", key="dashboard_message_input")
+st.button("Send Message", on_click=send_dashboard_message)
+
+st.subheader("📨 Dashboard Messages")
+if st.session_state.dashboard_messages:
+    st.json(st.session_state.dashboard_messages)
+else:
+    st.write("No messages yet.")
+
+st.divider()
+st.subheader("🧠 English Language Learning")
+
+metrics = english_learning.metrics()
+st.write(f"**Energy Cost / Cycle:** {english_learning.energy_cost:.2f}")
+st.write(f"**Learning Status:** {metrics['last_status']}")
+st.write(f"**Age (cycles):** {metrics['age']}")
+st.write(f"**Portal Score K:** {metrics['K']:.2f}")
+st.write(f"**Language Understanding:** {metrics['understanding']:.2f}")
+st.write(f"**Vocabulary Size:** {metrics['vocab_size']}")
+st.write(f"**Sentence Patterns Learned:** {metrics['pattern_count']}")
+st.write(f"**Intent:** {metrics['intent']:.2f}")
+
+st.caption("Learning is advanced on each life tick, or manually using the button below.")
+if st.button("Advance Language Cycle"):
+    english_learning.advance(energy_gate)
+
+st.info("📘 Learning English continuously: words, sentences, and structure.")
+
+if english_learning.is_invited():
+    st.success("📨 A7DO is ready to speak with you")
+
+    with st.form("english_chat_form", clear_on_submit=True):
+        user_msg = st.text_input("You:", key="english_chat_input")
+        send = st.form_submit_button("Send")
+
+    if send and user_msg:
+        english_learning.add_user_message(user_msg)
+
+    for speaker, message in english_learning.chat_history():
+        st.markdown(f"**{speaker}:** {message}")
+
+st.subheader("🟢 First Expression")
+
+if english_learning.expression_ready() and english_learning.first_output() is None:
+    st.warning("A7DO is ready for a first expression.")
+    out = st.text_area("A7DO First Expression", key="english_first_expression")
+
+    if out:
+        english_learning.set_first_output(out)
+
+elif english_learning.first_output():
+    st.success("First expression captured.")
+    st.text_area(
+        "A7DO Output",
+        english_learning.first_output(),
+        disabled=True,
+        key="english_output",
+    )
