@@ -30,7 +30,7 @@ try:
     from core_existence import A7DO_Core
     from nervous_system import A7DO_NervousSystem
     from body import A7DO_Body
-    from sensory import a7do_Sensory
+    from a7do_sensory import A7DO_Sensory
     from metabolism_master import A7DO_Metabolism
     from limbic_master import A7DO_Limbic
     from a7do_memory_master import A7DO_Memory
