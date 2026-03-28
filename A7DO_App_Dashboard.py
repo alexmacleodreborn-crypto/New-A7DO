@@ -15,6 +15,7 @@ def add_folders_to_path():
         "02_NERVOUS_SYSTEM",
         "03_BODY_SYSTEM",
         "04_SENSORY_SYSTEM",
+        "05_METABOLISM_AND_HOMEOSTASIS",
         "09_WORLD_MODEL"
     ]
     for f in folders:
