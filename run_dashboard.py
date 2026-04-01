@@ -445,23 +445,24 @@ civilisation = world_snapshot.get("civilisation") or life.civilisation.report(
         "strain": round(life.overload.strain, 2),
     }
 )
-birth_weeks = 40
-gestational_weeks = st.session_state.pregnancy_weeks
-biological_days = st.session_state.pregnancy_days
-trimester = pregnancy_trimester(gestational_weeks)
-is_postnatal = gestational_weeks >= birth_weeks
-postnatal_days = max(0, biological_days - (birth_weeks * 7))
+womb_snapshot = human.snapshot()
+birth_weeks = human.birth_weeks
+gestational_weeks = womb_snapshot["gestational_weeks"]
+biological_days = womb_snapshot["biological_days"]
+trimester = womb_snapshot["trimester"]
+is_postnatal = womb_snapshot["is_born"]
+postnatal_days = max(0, biological_days - int(birth_weeks * 7))
 pregnancy_metrics = build_growth_metrics(gestational_weeks)
 pregnancy_timeline = build_development_timeline(
     gestational_weeks,
     postnatal_days,
-    birth_weeks,
+    int(birth_weeks),
 )
 
 top1, top2, top3, top4 = st.columns(4)
 top1.metric("Gestational Weeks", f"{gestational_weeks:.2f}")
 top2.metric("Biological Days", biological_days)
-top3.metric("Pregnancy Phase", "Postnatal" if is_postnatal else f"Prenatal T{trimester}")
+top3.metric("Pregnancy Phase", "Postnatal" if is_postnatal else f"Womb T{trimester}")
 top4.metric("Pregnancy Auto", "Running" if st.session_state.pregnancy_running else "Paused")
 
 st.subheader("🌍 World / Body State")
@@ -477,6 +478,9 @@ st.json({
     "civilisation_season": civilisation["season"],
     "gestational_weeks": round(gestational_weeks, 2),
     "postnatal": is_postnatal,
+    "womb_state": womb_snapshot["state"],
+    "fetal_heartbeat_bpm": womb_snapshot["fetal_heartbeat_bpm"],
+    "mother_location": womb_snapshot["mother_location"]["label"],
 })
 
 tab_overview, tab_civilisation, tab_pregnancy, tab_memory, tab_language = st.tabs(
@@ -492,23 +496,17 @@ with tab_overview:
         st.json(life.memory.recent(5))
     with overview_right:
         st.subheader("Pregnancy Snapshot")
-        st.json(
-            {
-                "trimester": trimester,
-                "gestational_weeks": round(gestational_weeks, 2),
-                "biological_days": biological_days,
-                "postnatal_days": postnatal_days,
-                "growth_allowed": pregnancy_metrics["growth_allowed"],
-            }
-        )
+        st.json(womb_snapshot)
         if is_postnatal:
             st.success("Birth threshold reached. Postnatal systems are active.")
             st.line_chart(build_ecg_series(postnatal_days))
         else:
-            st.info("Prenatal phase is active. Birth unlocks postnatal external regulation.")
+            st.info("A7DO is still in the womb. Growth and maternal movement are active before birth.")
 
 with tab_civilisation:
     st.subheader("🏘️ Life Civilisation")
+    if not is_postnatal:
+        st.info("The external civilisation unlocks after birth. During pregnancy, A7DO travels with the mother through the outside world.")
     metric1, metric2, metric3, metric4 = st.columns(4)
     metric1.metric("Population", civilisation["population"])
     metric2.metric("Houses", civilisation["house_count"])
@@ -551,18 +549,31 @@ with tab_pregnancy:
     preg1, preg2, preg3 = st.columns(3)
     preg1.metric("Gestational Weeks", f"{gestational_weeks:.2f}")
     preg2.metric("Biological Days", biological_days)
-    preg3.metric("Phase", "Postnatal" if is_postnatal else f"Prenatal T{trimester}")
+    preg3.metric("Phase", "Postnatal" if is_postnatal else f"Womb T{trimester}")
     st.write(
         f"Auto-step is {'running' if st.session_state.pregnancy_running else 'paused'} for pregnancy time."
     )
+    st.subheader("Mother GPS / Building Movement")
+    st.json(womb_snapshot["mother_location"])
+    st.json(womb_snapshot["mother_motion"])
+    st.dataframe(womb_snapshot["buildings"], use_container_width=True, hide_index=True)
+    st.subheader("Fetal Anatomy Growth")
+    anatomy_rows = [
+        {"system": name, "stage": data["stage"], "progress": data["progress"]}
+        for name, data in womb_snapshot["anatomy"].items()
+    ]
+    st.dataframe(anatomy_rows, use_container_width=True, hide_index=True)
     st.dataframe(pregnancy_timeline, use_container_width=True, hide_index=True)
     st.subheader("Physics-Gated Growth")
     st.json(pregnancy_metrics)
+    st.metric("Fetal Heartbeat BPM", womb_snapshot["fetal_heartbeat_bpm"])
+    st.write("Recent womb events")
+    st.json(womb_snapshot["recent_events"])
     if is_postnatal:
         st.subheader("Postnatal ECG")
         st.line_chart(build_ecg_series(postnatal_days))
     else:
-        st.caption("LifeLoop exists in the dashboard, but this panel tracks the prenatal-to-postnatal progression from the pregnancy app.")
+        st.caption("During pregnancy, the body is forming inside the womb while the mother carries A7DO through the outer world.")
 
 with tab_memory:
     st.subheader("📨 Dashboard Messages")
