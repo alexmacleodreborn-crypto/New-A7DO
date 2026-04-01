@@ -91,6 +91,47 @@ class HumanDevelopment:
             "senses": self._phase_value(weeks, 18, 34),
         }
 
+    def postnatal_profile(self) -> dict:
+        postnatal_days = max(0, self.biological_days - int(self.birth_weeks * 7))
+        age_years = round(postnatal_days / 365.0, 2)
+        speech_progress = min(1.0, postnatal_days / 720.0)
+        smell_progress = min(1.0, postnatal_days / 180.0)
+        vision_progress = min(1.0, 0.2 + postnatal_days / 365.0)
+        school_ready = postnatal_days >= 365 * 4
+        workplace_ready = postnatal_days >= 365 * 18
+        life_phase = "newborn"
+        if postnatal_days >= 365 * 2:
+            life_phase = "toddler"
+        if postnatal_days >= 365 * 5:
+            life_phase = "child"
+        if postnatal_days >= 365 * 13:
+            life_phase = "adolescent"
+        if postnatal_days >= 365 * 18:
+            life_phase = "adult"
+
+        if speech_progress < 0.15:
+            speech_stage = "crying_only"
+        elif speech_progress < 0.35:
+            speech_stage = "babbling"
+        elif speech_progress < 0.65:
+            speech_stage = "single_words"
+        elif speech_progress < 0.9:
+            speech_stage = "short_sentences"
+        else:
+            speech_stage = "fluent_speech"
+
+        return {
+            "postnatal_days": postnatal_days,
+            "age_years": age_years,
+            "life_phase": life_phase,
+            "speech_stage": speech_stage,
+            "speech_progress": round(speech_progress, 2),
+            "smell_progress": round(smell_progress, 2),
+            "vision_progress": round(vision_progress, 2),
+            "school_ready": school_ready,
+            "workplace_ready": workplace_ready,
+        }
+
     def _phase_value(self, weeks: float, start: float, end: float) -> dict:
         if weeks < start:
             progress = 0.0
@@ -147,6 +188,7 @@ class HumanDevelopment:
                 for place_id, place in MOTHER_WORLD.items()
             ],
             "anatomy": anatomy,
+            "postnatal_profile": self.postnatal_profile(),
             "recent_events": list(self.recent_events),
         }
 
