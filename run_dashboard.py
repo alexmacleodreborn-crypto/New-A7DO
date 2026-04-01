@@ -403,6 +403,24 @@ civilisation = world_snapshot.get("civilisation") or life.civilisation.report(
         "strain": round(life.overload.strain, 2),
     }
 )
+birth_weeks = 40
+gestational_weeks = st.session_state.pregnancy_weeks
+biological_days = st.session_state.pregnancy_days
+trimester = pregnancy_trimester(gestational_weeks)
+is_postnatal = gestational_weeks >= birth_weeks
+postnatal_days = max(0, biological_days - (birth_weeks * 7))
+pregnancy_metrics = build_growth_metrics(gestational_weeks)
+pregnancy_timeline = build_development_timeline(
+    gestational_weeks,
+    postnatal_days,
+    birth_weeks,
+)
+
+top1, top2, top3, top4 = st.columns(4)
+top1.metric("Gestational Weeks", f"{gestational_weeks:.2f}")
+top2.metric("Biological Days", biological_days)
+top3.metric("Pregnancy Phase", "Postnatal" if is_postnatal else f"Prenatal T{trimester}")
+top4.metric("Pregnancy Auto", "Running" if st.session_state.pregnancy_running else "Paused")
 
 st.subheader("🌍 World / Body State")
 st.json({
@@ -415,40 +433,90 @@ st.json({
     "time_world": life.world_time.t,
     "civilisation_tick": civilisation["tick"],
     "civilisation_season": civilisation["season"],
+    "gestational_weeks": round(gestational_weeks, 2),
+    "postnatal": is_postnatal,
 })
 
-st.subheader("🏘️ Life Civilisation")
-metric1, metric2, metric3, metric4 = st.columns(4)
-metric1.metric("Population", civilisation["population"])
-metric2.metric("Season", civilisation["season"])
-metric3.metric("Dominant Choice", civilisation["dominant_choice"])
-metric4.metric("Avg Wisdom", civilisation["avg_wisdom"])
+tab_overview, tab_civilisation, tab_pregnancy, tab_memory, tab_language = st.tabs(
+    ["Overview", "Civilisation", "Pregnancy", "Memory", "Language"]
+)
 
-resources_df = {
-    "resource": list(civilisation["resources"].keys()),
-    "level": list(civilisation["resources"].values()),
-}
-citizens_df = {
-    "name": [citizen["name"] for citizen in civilisation["citizens"]],
-    "role": [citizen["role"] for citizen in civilisation["citizens"]],
-    "choice": [citizen["choice"] for citizen in civilisation["citizens"]],
-    "reason": [citizen["reason"] for citizen in civilisation["citizens"]],
-    "vitality": [citizen["vitality"] for citizen in civilisation["citizens"]],
-}
+with tab_overview:
+    overview_left, overview_right = st.columns([1.2, 1])
+    with overview_left:
+        st.subheader("❤️ Pulse")
+        st.write("Alive:", life.pulse.is_alive())
+        st.subheader("🧠 Recent Memory")
+        st.json(life.memory.recent(5))
+    with overview_right:
+        st.subheader("Pregnancy Snapshot")
+        st.json(
+            {
+                "trimester": trimester,
+                "gestational_weeks": round(gestational_weeks, 2),
+                "biological_days": biological_days,
+                "postnatal_days": postnatal_days,
+                "growth_allowed": pregnancy_metrics["growth_allowed"],
+            }
+        )
+        if is_postnatal:
+            st.success("Birth threshold reached. Postnatal systems are active.")
+            st.line_chart(build_ecg_series(postnatal_days))
+        else:
+            st.info("Prenatal phase is active. Birth unlocks postnatal external regulation.")
 
-st.write(civilisation["story"])
-st.bar_chart(resources_df, x="resource", y="level")
-st.dataframe(citizens_df, use_container_width=True, hide_index=True)
-st.write("Dilemmas")
-st.json(civilisation["dilemmas"])
-st.write("Recent settlement events")
-st.json(civilisation["recent_events"])
+with tab_civilisation:
+    st.subheader("🏘️ Life Civilisation")
+    metric1, metric2, metric3, metric4 = st.columns(4)
+    metric1.metric("Population", civilisation["population"])
+    metric2.metric("Season", civilisation["season"])
+    metric3.metric("Dominant Choice", civilisation["dominant_choice"])
+    metric4.metric("Avg Wisdom", civilisation["avg_wisdom"])
 
-st.subheader("🧠 Recent Memory")
-st.json(life.memory.recent(5))
+    resources_df = {
+        "resource": list(civilisation["resources"].keys()),
+        "level": list(civilisation["resources"].values()),
+    }
+    citizens_df = {
+        "name": [citizen["name"] for citizen in civilisation["citizens"]],
+        "role": [citizen["role"] for citizen in civilisation["citizens"]],
+        "choice": [citizen["choice"] for citizen in civilisation["citizens"]],
+        "reason": [citizen["reason"] for citizen in civilisation["citizens"]],
+        "vitality": [citizen["vitality"] for citizen in civilisation["citizens"]],
+    }
 
-st.subheader("❤️ Pulse")
-st.write("Alive:", life.pulse.is_alive())
+    st.write(civilisation["story"])
+    st.bar_chart(resources_df, x="resource", y="level")
+    st.dataframe(citizens_df, use_container_width=True, hide_index=True)
+    st.write("Dilemmas")
+    st.json(civilisation["dilemmas"])
+    st.write("Recent settlement events")
+    st.json(civilisation["recent_events"])
+
+with tab_pregnancy:
+    st.subheader("🧬 Pregnancy & Development")
+    preg1, preg2, preg3 = st.columns(3)
+    preg1.metric("Gestational Weeks", f"{gestational_weeks:.2f}")
+    preg2.metric("Biological Days", biological_days)
+    preg3.metric("Phase", "Postnatal" if is_postnatal else f"Prenatal T{trimester}")
+    st.write(
+        f"Auto-step is {'running' if st.session_state.pregnancy_running else 'paused'} for pregnancy time."
+    )
+    st.dataframe(pregnancy_timeline, use_container_width=True, hide_index=True)
+    st.subheader("Physics-Gated Growth")
+    st.json(pregnancy_metrics)
+    if is_postnatal:
+        st.subheader("Postnatal ECG")
+        st.line_chart(build_ecg_series(postnatal_days))
+    else:
+        st.caption("LifeLoop exists in the dashboard, but this panel tracks the prenatal-to-postnatal progression from the pregnancy app.")
+
+with tab_memory:
+    st.subheader("📨 Dashboard Messages")
+    if st.session_state.dashboard_messages:
+        st.json(st.session_state.dashboard_messages)
+    else:
+        st.write("No messages yet.")
 
 st.subheader("⌨️ Keyboard Message")
 
@@ -468,74 +536,69 @@ def send_dashboard_message() -> None:
 st.text_input("Type a message for the dashboard", key="dashboard_message_input")
 st.button("Send Message", on_click=send_dashboard_message)
 
-st.subheader("📨 Dashboard Messages")
-if st.session_state.dashboard_messages:
-    st.json(st.session_state.dashboard_messages)
-else:
-    st.write("No messages yet.")
+with tab_language:
+    st.divider()
+    st.subheader("🧠 English Language Learning")
 
-st.divider()
-st.subheader("🧠 English Language Learning")
+    understanding = language_understanding()
+    st.write(f"**Age (cycles):** {st.session_state.english_age}")
+    st.write(f"**Portal Score K:** {st.session_state.english_K:.2f}")
+    st.write(f"**Language Understanding:** {understanding:.2f}")
+    st.write(f"**Vocabulary Size:** {len(st.session_state.english_vocab)}")
+    st.write(f"**Sentence Patterns Learned:** {len(st.session_state.english_patterns)}")
+    st.write(f"**Intent:** {st.session_state.english_intent:.2f}")
 
-understanding = language_understanding()
-st.write(f"**Age (cycles):** {st.session_state.english_age}")
-st.write(f"**Portal Score K:** {st.session_state.english_K:.2f}")
-st.write(f"**Language Understanding:** {understanding:.2f}")
-st.write(f"**Vocabulary Size:** {len(st.session_state.english_vocab)}")
-st.write(f"**Sentence Patterns Learned:** {len(st.session_state.english_patterns)}")
-st.write(f"**Intent:** {st.session_state.english_intent:.2f}")
+    st.caption("Learning is advanced on each life tick, or manually using the button below.")
+    if st.button("Advance Language Cycle"):
+        understanding = advance_english_learning()
 
-st.caption("Learning is advanced on each life tick, or manually using the button below.")
-if st.button("Advance Language Cycle"):
-    understanding = advance_english_learning()
+    st.info("📘 Learning English continuously: words, sentences, and structure.")
 
-st.info("📘 Learning English continuously: words, sentences, and structure.")
+    if st.session_state.english_invited:
+        st.success("📨 A7DO is ready to speak with you")
 
-if st.session_state.english_invited:
-    st.success("📨 A7DO is ready to speak with you")
+        with st.form("english_chat_form", clear_on_submit=True):
+            user_msg = st.text_input("You:", key="english_chat_input")
+            send = st.form_submit_button("Send")
 
-    with st.form("english_chat_form", clear_on_submit=True):
-        user_msg = st.text_input("You:", key="english_chat_input")
-        send = st.form_submit_button("Send")
+        if send and user_msg:
+            absorb_sentence(user_msg)
+            st.session_state.english_chat.append(("You", user_msg))
 
-    if send and user_msg:
-        absorb_sentence(user_msg)
-        st.session_state.english_chat.append(("You", user_msg))
+            if st.session_state.english_first_output is None:
+                reply = random.choice(
+                    [
+                        "I am listening.",
+                        "I understand you.",
+                        "Please continue.",
+                        "I am learning English.",
+                    ]
+                )
+            else:
+                reply = "I remember what you said."
 
-        if st.session_state.english_first_output is None:
-            reply = random.choice(
-                [
-                    "I am listening.",
-                    "I understand you.",
-                    "Please continue.",
-                    "I am learning English.",
-                ]
-            )
-        else:
-            reply = "I remember what you said."
+            st.session_state.english_chat.append(("A7DO", reply))
 
-        st.session_state.english_chat.append(("A7DO", reply))
+        for speaker, message in st.session_state.english_chat:
+            st.markdown(f"**{speaker}:** {message}")
 
-    for speaker, message in st.session_state.english_chat:
-        st.markdown(f"**{speaker}:** {message}")
+    st.subheader("🟢 First Expression")
 
-st.subheader("🟢 First Expression")
+    if (
+        st.session_state.english_expression_ready
+        and st.session_state.english_first_output is None
+    ):
+        st.warning("A7DO is ready for a first expression.")
+        out = st.text_area("A7DO First Expression", key="english_first_expression")
 
-if (
-    st.session_state.english_expression_ready
-    and st.session_state.english_first_output is None
-):
-    st.warning("A7DO is ready for a first expression.")
-    out = st.text_area("A7DO First Expression", key="english_first_expression")
+        if out:
+            st.session_state.english_first_output = out
 
-    if out:
-        st.session_state.english_first_output = out
-
-elif st.session_state.english_first_output:
-    st.success("First expression captured.")
-    st.text_area(
-        "A7DO Output",
-        st.session_state.english_first_output,
-        disabled=True,
-        key="english_output",
-    )
+    elif st.session_state.english_first_output:
+        st.success("First expression captured.")
+        st.text_area(
+            "A7DO Output",
+            st.session_state.english_first_output,
+            disabled=True,
+            key="english_output",
+        )

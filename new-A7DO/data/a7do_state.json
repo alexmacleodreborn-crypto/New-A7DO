@@ -1,76 +1,303 @@
 {
-  "tick": 2,
-  "season": "Seed",
+  "tick": 8,
+  "season": "Bloom",
   "population": 4,
-  "dominant_choice": "bond",
+  "dominant_choice": "learn",
   "resources": {
     "food": 0.69,
-    "materials": 0.48,
-    "knowledge": 0.56,
-    "culture": 0.51,
-    "security": 0.84,
-    "spirit": 0.77
+    "materials": 0.67,
+    "knowledge": 1.0,
+    "culture": 0.75,
+    "security": 0.96,
+    "spirit": 0.99
   },
-  "avg_wisdom": 0.46,
+  "avg_wisdom": 0.59,
   "dilemmas": [
     "New ideas are ready. The village can risk building something lasting."
   ],
-  "story": "Tick 2: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+  "story": "Tick 8: In Bloom season under clear skies, Ari the Grower chose to learn because curiosity is pulling life toward discovery.",
   "recent_events": [
     "Tick 1: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
-    "Tick 2: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery."
+    "Tick 2: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+    "Tick 3: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+    "Tick 4: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+    "Tick 5: In Seed season under clear skies, Ari the Grower chose to secure because danger feels close and the village needs protection.",
+    "Tick 6: In Bloom season under clear skies, Mira the Builder chose to bond because the settlement needs trust to stay alive.",
+    "Tick 7: In Bloom season under storm skies, Mira the Builder chose to secure because danger feels close and the village needs protection.",
+    "Tick 8: In Bloom season under clear skies, Ari the Grower chose to learn because curiosity is pulling life toward discovery."
   ],
   "world_context": {
     "weather": "clear",
-    "light": "day",
-    "time_world": 2.0,
-    "time_internal": 2,
-    "energy": 8.0,
-    "strain": 0.2
+    "light": "night",
+    "time_world": 8.0,
+    "time_internal": 8,
+    "energy": 0.2,
+    "strain": 0.65
   },
   "citizens": [
     {
       "name": "Ari",
       "role": "Grower",
-      "choice": "secure",
-      "reason": "danger feels close and the village needs protection",
-      "vitality": 0.71,
-      "hunger": 0.76,
-      "belonging": 0.59,
-      "curiosity": 0.32
+      "choice": "learn",
+      "reason": "curiosity is pulling life toward discovery",
+      "vitality": 0.75,
+      "hunger": 0.9,
+      "belonging": 0.67,
+      "curiosity": 0.33
     },
     {
       "name": "Mira",
       "role": "Builder",
-      "choice": "bond",
-      "reason": "the settlement needs trust to stay alive",
-      "vitality": 0.6,
-      "hunger": 0.53,
-      "belonging": 0.59,
-      "curiosity": 0.41
+      "choice": "learn",
+      "reason": "curiosity is pulling life toward discovery",
+      "vitality": 0.59,
+      "hunger": 0.51,
+      "belonging": 0.67,
+      "curiosity": 0.42
     },
     {
       "name": "Sol",
       "role": "Thinker",
       "choice": "learn",
       "reason": "curiosity is pulling life toward discovery",
-      "vitality": 0.49,
-      "hunger": 0.46,
-      "belonging": 0.42,
-      "curiosity": 0.57
+      "vitality": 0.48,
+      "hunger": 0.44,
+      "belonging": 0.5,
+      "curiosity": 0.42
     },
     {
       "name": "Tala",
       "role": "Carer",
-      "choice": "bond",
-      "reason": "the settlement needs trust to stay alive",
-      "vitality": 0.63,
-      "hunger": 0.57,
-      "belonging": 0.88,
-      "curiosity": 0.39
+      "choice": "learn",
+      "reason": "curiosity is pulling life toward discovery",
+      "vitality": 0.67,
+      "hunger": 0.71,
+      "belonging": 0.82,
+      "curiosity": 0.32
     }
   ],
-  "identity": "2420fd6f-23d9-46b8-9d45-efab2e365351",
+  "identity": "9a8ff138-b83b-4c0c-9a1d-d179a9ffad8d",
   "pulse_alive": true,
-  "memory": []
+  "memory": [
+    {
+      "event": {
+        "type": "pain_withdrawal",
+        "strain": 0.6,
+        "body_state": {
+          "orientation": {
+            "action": {
+              "gross_motor": "withdraw_limb"
+            }
+          }
+        },
+        "world": {
+          "energy": 4.0,
+          "strain": 0.6,
+          "last_action": {
+            "gross_motor": "withdraw_limb"
+          },
+          "last_sensation": {
+            "weather": "storm",
+            "light": "night",
+            "regulation": "stable"
+          },
+          "time": 7.0,
+          "current_place": "house",
+          "known_places": [
+            "house"
+          ],
+          "civilisation": {
+            "tick": 7,
+            "season": "Bloom",
+            "population": 4,
+            "dominant_choice": "secure",
+            "resources": {
+              "food": 0.62,
+              "materials": 0.61,
+              "knowledge": 1.0,
+              "culture": 0.75,
+              "security": 0.96,
+              "spirit": 0.99
+            },
+            "avg_wisdom": 0.52,
+            "dilemmas": [
+              "Safety feels fragile. Work can go to shelter or to discovery.",
+              "New ideas are ready. The village can risk building something lasting."
+            ],
+            "story": "Tick 7: In Bloom season under storm skies, Mira the Builder chose to secure because danger feels close and the village needs protection.",
+            "recent_events": [
+              "Tick 1: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+              "Tick 2: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+              "Tick 3: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+              "Tick 4: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+              "Tick 5: In Seed season under clear skies, Ari the Grower chose to secure because danger feels close and the village needs protection.",
+              "Tick 6: In Bloom season under clear skies, Mira the Builder chose to bond because the settlement needs trust to stay alive.",
+              "Tick 7: In Bloom season under storm skies, Mira the Builder chose to secure because danger feels close and the village needs protection."
+            ],
+            "world_context": {
+              "weather": "storm",
+              "light": "night",
+              "time_world": 7.0,
+              "time_internal": 7,
+              "energy": 4.0,
+              "strain": 0.6
+            },
+            "citizens": [
+              {
+                "name": "Ari",
+                "role": "Grower",
+                "choice": "eat",
+                "reason": "food stores feel too low for comfort",
+                "vitality": 0.79,
+                "hunger": 0.93,
+                "belonging": 0.68,
+                "curiosity": 0.38
+              },
+              {
+                "name": "Mira",
+                "role": "Builder",
+                "choice": "secure",
+                "reason": "danger feels close and the village needs protection",
+                "vitality": 0.63,
+                "hunger": 0.54,
+                "belonging": 0.68,
+                "curiosity": 0.47
+              },
+              {
+                "name": "Sol",
+                "role": "Thinker",
+                "choice": "rest",
+                "reason": "the body needs recovery before it can help others",
+                "vitality": 0.52,
+                "hunger": 0.47,
+                "belonging": 0.51,
+                "curiosity": 0.47
+              },
+              {
+                "name": "Tala",
+                "role": "Carer",
+                "choice": "secure",
+                "reason": "danger feels close and the village needs protection",
+                "vitality": 0.71,
+                "hunger": 0.74,
+                "belonging": 0.83,
+                "curiosity": 0.37
+              }
+            ]
+          }
+        },
+        "time_internal": 7,
+        "time_real": 9.503582999983337,
+        "time_world": 7.0
+      },
+      "time": "2026-04-01T14:18:21.285004+00:00",
+      "salience": 0.99
+    },
+    {
+      "event": {
+        "type": "pain_withdrawal",
+        "strain": 0.5499999999999999,
+        "body_state": null,
+        "world": {
+          "energy": 1.8,
+          "strain": 0.5499999999999999,
+          "last_action": null,
+          "last_sensation": {
+            "weather": "clear",
+            "light": "night",
+            "regulation": "rest"
+          },
+          "time": 8.0,
+          "current_place": "house",
+          "known_places": [
+            "house"
+          ],
+          "civilisation": {
+            "tick": 8,
+            "season": "Bloom",
+            "population": 4,
+            "dominant_choice": "learn",
+            "resources": {
+              "food": 0.69,
+              "materials": 0.67,
+              "knowledge": 1.0,
+              "culture": 0.75,
+              "security": 0.96,
+              "spirit": 0.99
+            },
+            "avg_wisdom": 0.59,
+            "dilemmas": [
+              "New ideas are ready. The village can risk building something lasting."
+            ],
+            "story": "Tick 8: In Bloom season under clear skies, Ari the Grower chose to learn because curiosity is pulling life toward discovery.",
+            "recent_events": [
+              "Tick 1: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+              "Tick 2: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+              "Tick 3: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+              "Tick 4: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+              "Tick 5: In Seed season under clear skies, Ari the Grower chose to secure because danger feels close and the village needs protection.",
+              "Tick 6: In Bloom season under clear skies, Mira the Builder chose to bond because the settlement needs trust to stay alive.",
+              "Tick 7: In Bloom season under storm skies, Mira the Builder chose to secure because danger feels close and the village needs protection.",
+              "Tick 8: In Bloom season under clear skies, Ari the Grower chose to learn because curiosity is pulling life toward discovery."
+            ],
+            "world_context": {
+              "weather": "clear",
+              "light": "night",
+              "time_world": 8.0,
+              "time_internal": 8,
+              "energy": 1.8,
+              "strain": 0.55
+            },
+            "citizens": [
+              {
+                "name": "Ari",
+                "role": "Grower",
+                "choice": "learn",
+                "reason": "curiosity is pulling life toward discovery",
+                "vitality": 0.75,
+                "hunger": 0.9,
+                "belonging": 0.67,
+                "curiosity": 0.33
+              },
+              {
+                "name": "Mira",
+                "role": "Builder",
+                "choice": "learn",
+                "reason": "curiosity is pulling life toward discovery",
+                "vitality": 0.59,
+                "hunger": 0.51,
+                "belonging": 0.67,
+                "curiosity": 0.42
+              },
+              {
+                "name": "Sol",
+                "role": "Thinker",
+                "choice": "learn",
+                "reason": "curiosity is pulling life toward discovery",
+                "vitality": 0.48,
+                "hunger": 0.44,
+                "belonging": 0.5,
+                "curiosity": 0.42
+              },
+              {
+                "name": "Tala",
+                "role": "Carer",
+                "choice": "learn",
+                "reason": "curiosity is pulling life toward discovery",
+                "vitality": 0.67,
+                "hunger": 0.71,
+                "belonging": 0.82,
+                "curiosity": 0.32
+              }
+            ]
+          }
+        },
+        "time_internal": 8,
+        "time_real": 9.855586600024253,
+        "time_world": 8.0
+      },
+      "time": "2026-04-01T14:18:21.637016+00:00",
+      "salience": 1.0
+    }
+  ]
 }
