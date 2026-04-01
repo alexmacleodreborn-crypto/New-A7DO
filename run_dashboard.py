@@ -378,7 +378,6 @@ st.sidebar.title("🧠 A7DO Control")
 if st.sidebar.button("🔘 Tick (1)"):
     if human.is_born:
         life.tick()
-        advance_english_learning()
     else:
         advance_pregnancy(1)
 
@@ -434,7 +433,6 @@ if st.session_state.pregnancy_running:
 if st.session_state.run_ticks_remaining > 0:
     if human.is_born:
         life.tick()
-        advance_english_learning()
     else:
         advance_pregnancy(1)
     st.session_state.run_ticks_remaining -= 1
@@ -444,7 +442,6 @@ if st.session_state.run_ticks_remaining > 0:
 if st.session_state.auto_run:
     if human.is_born:
         life.tick()
-        advance_english_learning()
     else:
         advance_pregnancy(1)
     time.sleep(auto_sleep / 1000.0)
@@ -455,22 +452,28 @@ if st.session_state.auto_run:
 # --------------------------------------------------
 st.title("🧠 A7DO — Live Introspection Dashboard")
 
+womb_snapshot = human.snapshot()
 world_snapshot = life.world.snapshot()
-civilisation = world_snapshot.get("civilisation") or life.civilisation.report(
+civilisation = life.civilisation.report(
     {
         "time_world": life.world_time.t,
         "time_internal": life.internal_time,
         "energy": round(life.energy.level(), 2),
         "strain": round(life.overload.strain, 2),
+        "is_born": womb_snapshot["is_born"],
+        "a7do_profile": {
+            "is_born": womb_snapshot["is_born"],
+            **womb_snapshot["postnatal_profile"],
+        },
     }
 )
-womb_snapshot = human.snapshot()
 birth_weeks = human.birth_weeks
 gestational_weeks = womb_snapshot["gestational_weeks"]
 biological_days = womb_snapshot["biological_days"]
 trimester = womb_snapshot["trimester"]
 is_postnatal = womb_snapshot["is_born"]
 postnatal_days = max(0, biological_days - int(birth_weeks * 7))
+postnatal_profile = womb_snapshot["postnatal_profile"]
 pregnancy_metrics = build_growth_metrics(gestational_weeks)
 pregnancy_timeline = build_development_timeline(
     gestational_weeks,
@@ -504,9 +507,7 @@ combined_events.extend(
     for event in bridge_state["care_events"][-5:]
 )
 auto_learning_state = (
-    "Automatic after birth ticks"
-    if is_postnatal and (st.session_state.auto_run or st.session_state.run_ticks_remaining > 0)
-    else "Automatic when life ticks run"
+    "Disabled for language"
 )
 
 top1, top2, top3, top4 = st.columns(4)
