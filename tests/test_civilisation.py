@@ -24,6 +24,11 @@ def test_civilisation_generates_choices_and_story():
     assert report["dominant_choice"] in {"eat", "rest", "bond", "secure", "learn"}
     assert len(report["citizens"]) == report["population"]
     assert all(citizen["choice"] for citizen in report["citizens"])
+    assert report["house_count"] >= 3
+    assert report["spatial_frame"]["nodes"]
+    assert "location" in report["citizens"][0]
+    assert "xyz" in report["citizens"][0]
+    assert "recent_conversations" in report
 
 
 def test_life_loop_publishes_civilisation_and_saves_json(tmp_path):
@@ -41,6 +46,7 @@ def test_life_loop_publishes_civilisation_and_saves_json(tmp_path):
     assert civilisation["population"] >= 4
     assert civilisation["story"]
     assert civilisation["resources"]["food"] >= 0.0
+    assert civilisation["spatial_frame"]["nodes"]
 
     save_path = tmp_path / "a7do_state.json"
     written = life.civilisation.save(

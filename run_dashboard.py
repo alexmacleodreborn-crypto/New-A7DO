@@ -469,7 +469,7 @@ with tab_civilisation:
     st.subheader("🏘️ Life Civilisation")
     metric1, metric2, metric3, metric4 = st.columns(4)
     metric1.metric("Population", civilisation["population"])
-    metric2.metric("Season", civilisation["season"])
+    metric2.metric("Houses", civilisation["house_count"])
     metric3.metric("Dominant Choice", civilisation["dominant_choice"])
     metric4.metric("Avg Wisdom", civilisation["avg_wisdom"])
 
@@ -488,6 +488,17 @@ with tab_civilisation:
     st.write(civilisation["story"])
     st.bar_chart(resources_df, x="resource", y="level")
     st.dataframe(citizens_df, use_container_width=True, hide_index=True)
+    st.subheader("3D World Frame")
+    st.dataframe(
+        civilisation["spatial_frame"]["nodes"],
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.subheader("Live Conversations")
+    if civilisation["recent_conversations"]:
+        st.json(civilisation["recent_conversations"])
+    else:
+        st.write("No conversations are active this tick.")
     st.write("Dilemmas")
     st.json(civilisation["dilemmas"])
     st.write("Recent settlement events")
