@@ -341,14 +341,52 @@ if st.sidebar.button("▶️ Run N"):
 if st.sidebar.button("⏸ Pause"):
     st.session_state.run_ticks_remaining = 0
 
+st.sidebar.markdown("---")
+st.sidebar.subheader("Auto Run")
+st.session_state.auto_run = st.sidebar.toggle(
+    "Continuous simulation",
+    value=st.session_state.auto_run,
+)
+auto_sleep = st.sidebar.slider(
+    "Cycle delay (ms)",
+    min_value=50,
+    max_value=1000,
+    value=150,
+    step=50,
+)
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("Pregnancy")
+if st.sidebar.button("Advance Pregnancy Day"):
+    advance_pregnancy(1)
+
+if st.sidebar.button("Start Pregnancy Auto"):
+    st.session_state.pregnancy_running = True
+
+if st.sidebar.button("Pause Pregnancy Auto"):
+    st.session_state.pregnancy_running = False
+
 # --------------------------------------------------
 # RUN LOOP
 # --------------------------------------------------
+if st.session_state.pregnancy_running:
+    auto_step_days = max(
+        1,
+        int(round(1 + (st.session_state.pregnancy_weeks / 40.0) * 2)),
+    )
+    advance_pregnancy(auto_step_days)
+
 if st.session_state.run_ticks_remaining > 0:
     life.tick()
     advance_english_learning()
     st.session_state.run_ticks_remaining -= 1
     time.sleep(0.05)
+    st.rerun()
+
+if st.session_state.auto_run:
+    life.tick()
+    advance_english_learning()
+    time.sleep(auto_sleep / 1000.0)
     st.rerun()
 
 # --------------------------------------------------
