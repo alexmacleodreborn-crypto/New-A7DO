@@ -53,6 +53,10 @@ HumanDevelopment = load_module(
     "human_development",
     "a7do_human_development.py",
 ).HumanDevelopment
+CareBridge = load_module(
+    "care_bridge",
+    "a7do_care_bridge.py",
+).CareBridge
 LifeStage = life_stages_mod.LifeStage
 
 # --------------------------------------------------
@@ -85,6 +89,9 @@ if "human_development" not in st.session_state:
         biological_days=52,
     )
 
+if "care_bridge" not in st.session_state:
+    st.session_state.care_bridge = CareBridge()
+
 if "pregnancy_running" not in st.session_state:
     st.session_state.pregnancy_running = False
 
@@ -93,6 +100,7 @@ if "auto_run" not in st.session_state:
 
 life = st.session_state.life
 human = st.session_state.human_development
+care_bridge = st.session_state.care_bridge
 
 # --------------------------------------------------
 # ENGLISH LEARNING STATE
@@ -469,6 +477,10 @@ pregnancy_timeline = build_development_timeline(
     postnatal_days,
     int(birth_weeks),
 )
+bridge_state = care_bridge.sync_from_development(
+    womb_snapshot,
+    auto_run=st.session_state.auto_run or st.session_state.pregnancy_running,
+)
 limb_rows = [
     {"limb": "arms", **womb_snapshot["anatomy"]["arms"]},
     {"limb": "legs", **womb_snapshot["anatomy"]["legs"]},
@@ -486,6 +498,10 @@ combined_events.extend(
 combined_events.extend(
     {"source": "dashboard", "event": item["message"]}
     for item in st.session_state.dashboard_messages[-5:]
+)
+combined_events.extend(
+    {"source": "care", "event": event}
+    for event in bridge_state["care_events"][-5:]
 )
 auto_learning_state = (
     "Automatic after birth ticks"
@@ -515,6 +531,10 @@ st.json({
     "womb_state": womb_snapshot["state"],
     "fetal_heartbeat_bpm": womb_snapshot["fetal_heartbeat_bpm"],
     "mother_location": womb_snapshot["mother_location"]["label"],
+    "02_stage": bridge_state["stage"],
+    "03_limb_status": bridge_state["body_status"]["limb_status"],
+    "04_mode": bridge_state["sensory_status"]["active_mode"],
+    "care_mode": bridge_state["care_state"]["mode"],
 })
 
 tab_overview, tab_civilisation, tab_pregnancy, tab_memory, tab_language = st.tabs(
@@ -539,6 +559,16 @@ with tab_overview:
             st.line_chart(build_fetal_heartbeat_series(womb_snapshot["fetal_heartbeat_bpm"]))
         st.subheader("Limb Growth")
         st.dataframe(limb_rows, width="stretch", hide_index=True)
+        st.subheader("02 / 03 / 04 System Bridge")
+        st.json(
+            {
+                "nervous_system": bridge_state["neural_report"],
+                "neural_activity": bridge_state["neural_activity"],
+                "body_system": bridge_state["body_status"],
+                "sensory_system": bridge_state["sensory_status"],
+                "perception": bridge_state["perception"],
+            }
+        )
         st.subheader("🧠 Recent Memory")
         st.json(life.memory.recent(5))
     with overview_right:
@@ -549,6 +579,14 @@ with tab_overview:
             st.line_chart(build_ecg_series(postnatal_days))
         else:
             st.info("A7DO is still in the womb. Growth and maternal movement are active before birth.")
+        st.subheader("Care System")
+        st.json(
+            {
+                "care_state": bridge_state["care_state"],
+                "metabolism": bridge_state["metabolic_report"],
+                "recent_care_events": bridge_state["care_events"][-5:],
+            }
+        )
         st.subheader("Automatic Events")
         st.json(combined_events[-10:])
 
@@ -618,6 +656,8 @@ with tab_pregnancy:
     st.metric("Fetal Heartbeat BPM", womb_snapshot["fetal_heartbeat_bpm"])
     st.write("Recent womb events")
     st.json(womb_snapshot["recent_events"])
+    st.subheader("Care Before / After Birth")
+    st.json(bridge_state["care_state"])
     if is_postnatal:
         st.subheader("Postnatal ECG")
         st.line_chart(build_ecg_series(postnatal_days))
@@ -632,6 +672,8 @@ with tab_memory:
         st.write("No messages yet.")
     st.subheader("Unified Event Stream")
     st.json(combined_events[-10:])
+    st.subheader("Care Events")
+    st.json(bridge_state["care_events"][-10:])
 
 st.subheader("⌨️ Keyboard Message")
 
