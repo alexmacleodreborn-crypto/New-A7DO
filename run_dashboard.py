@@ -547,7 +547,7 @@ with tab_overview:
     summary1.metric("Heartbeat BPM", womb_snapshot["fetal_heartbeat_bpm"] if not is_postnatal else int(build_ecg_series(postnatal_days, 1)[0]))
     summary2.metric("Arms", womb_snapshot["anatomy"]["arms"]["stage"])
     summary3.metric("Legs", womb_snapshot["anatomy"]["legs"]["stage"])
-    summary4.metric("Learning", auto_learning_state)
+    summary4.metric("Speech", postnatal_profile["speech_stage"] if is_postnatal else "pre-language")
 
     overview_left, overview_right = st.columns([1.2, 1])
     with overview_left:
@@ -568,6 +568,7 @@ with tab_overview:
                 "body_system": bridge_state["body_status"],
                 "sensory_system": bridge_state["sensory_status"],
                 "perception": bridge_state["perception"],
+                "postnatal_profile": postnatal_profile,
             }
         )
         st.subheader("🧠 Recent Memory")
@@ -599,7 +600,7 @@ with tab_civilisation:
     metric1.metric("Population", civilisation["population"])
     metric2.metric("Houses", civilisation["house_count"])
     metric3.metric("Dominant Choice", civilisation["dominant_choice"])
-    metric4.metric("Avg Wisdom", civilisation["avg_wisdom"])
+    metric4.metric("Scenario", civilisation["scenario"])
 
     resources_df = {
         "resource": list(civilisation["resources"].keys()),
@@ -631,6 +632,13 @@ with tab_civilisation:
     st.json(civilisation["dilemmas"])
     st.write("Recent settlement events")
     st.json(civilisation["recent_events"])
+    if is_postnatal:
+        st.subheader("A7DO In Population")
+        a7do_rows = [citizen for citizen in civilisation["citizens"] if citizen["name"] == "A7DO"]
+        if a7do_rows:
+            st.json(a7do_rows[0])
+        else:
+            st.write("A7DO has not joined the population yet.")
 
 with tab_pregnancy:
     st.subheader("🧬 Pregnancy & Development")
@@ -659,6 +667,9 @@ with tab_pregnancy:
     st.json(womb_snapshot["recent_events"])
     st.subheader("Care Before / After Birth")
     st.json(bridge_state["care_state"])
+    if is_postnatal:
+        st.subheader("Postnatal Development")
+        st.json(postnatal_profile)
     if is_postnatal:
         st.subheader("Postnatal ECG")
         st.line_chart(build_ecg_series(postnatal_days))
@@ -706,12 +717,15 @@ with tab_language:
     st.write(f"**Sentence Patterns Learned:** {len(st.session_state.english_patterns)}")
     st.write(f"**Intent:** {st.session_state.english_intent:.2f}")
     st.write(f"**Automatic Learning:** {auto_learning_state}")
+    st.write(f"**Speech Development:** {postnatal_profile['speech_stage'] if is_postnatal else 'pre-language'}")
+    st.write(f"**Vision Development:** {postnatal_profile['vision_progress'] if is_postnatal else 0.0}")
+    st.write(f"**Smell Development:** {postnatal_profile['smell_progress'] if is_postnatal else 0.0}")
 
-    st.caption("Learning is advanced on each life tick, or manually using the button below.")
+    st.caption("Language does not auto-learn. It only advances when you explicitly trigger it here or interact directly.")
     if st.button("Advance Language Cycle"):
         understanding = advance_english_learning()
 
-    st.info("📘 Learning English continuously: words, sentences, and structure.")
+    st.info("📘 Language is manual-only here. Postnatal growth still changes speech readiness, smell, vision, school attendance, and social learning automatically.")
 
     if st.session_state.english_invited:
         st.success("📨 A7DO is ready to speak with you")
