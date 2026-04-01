@@ -527,11 +527,11 @@ with tab_civilisation:
 
     st.write(civilisation["story"])
     st.bar_chart(resources_df, x="resource", y="level")
-    st.dataframe(citizens_df, use_container_width=True, hide_index=True)
+    st.dataframe(citizens_df, width="stretch", hide_index=True)
     st.subheader("3D World Frame")
     st.dataframe(
         civilisation["spatial_frame"]["nodes"],
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
     st.subheader("Live Conversations")
@@ -556,14 +556,14 @@ with tab_pregnancy:
     st.subheader("Mother GPS / Building Movement")
     st.json(womb_snapshot["mother_location"])
     st.json(womb_snapshot["mother_motion"])
-    st.dataframe(womb_snapshot["buildings"], use_container_width=True, hide_index=True)
+    st.dataframe(womb_snapshot["buildings"], width="stretch", hide_index=True)
     st.subheader("Fetal Anatomy Growth")
     anatomy_rows = [
         {"system": name, "stage": data["stage"], "progress": data["progress"]}
         for name, data in womb_snapshot["anatomy"].items()
     ]
-    st.dataframe(anatomy_rows, use_container_width=True, hide_index=True)
-    st.dataframe(pregnancy_timeline, use_container_width=True, hide_index=True)
+    st.dataframe(anatomy_rows, width="stretch", hide_index=True)
+    st.dataframe(pregnancy_timeline, width="stretch", hide_index=True)
     st.subheader("Physics-Gated Growth")
     st.json(pregnancy_metrics)
     st.metric("Fetal Heartbeat BPM", womb_snapshot["fetal_heartbeat_bpm"])
