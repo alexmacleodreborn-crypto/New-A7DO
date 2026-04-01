@@ -14,6 +14,7 @@ class WorldState:
             "time": None,
             "current_place": None,
             "known_places": [],
+            "civilisation": None,
         }
         if default_place is not None:
             self.update_location(default_place)

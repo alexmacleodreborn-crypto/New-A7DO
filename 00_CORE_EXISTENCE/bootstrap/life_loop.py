@@ -131,6 +131,10 @@ IntrospectionSnapshot = load_module(
     "snapshot",
     "12_INTERFACE_AND_OBSERVABILITY/snapshot.py",
 ).IntrospectionSnapshot
+CivilisationSim = load_module(
+    "civilisation",
+    "a7do_civilisation.py",
+).CivilisationSim
 
 
 class LifeLoop:
@@ -179,6 +183,7 @@ class LifeLoop:
             self.predictor,
             self.attention,
         )
+        self.civilisation = CivilisationSim()
         self.snapshot = IntrospectionSnapshot(
             self.world,
             self.memory,
@@ -296,6 +301,17 @@ class LifeLoop:
                 },
                 time=self.world_time.t,
             )
+            civilisation_state = self.civilisation.step(
+                {
+                    "weather": current_weather,
+                    "light": current_light,
+                    "time_world": self.world_time.t,
+                    "time_internal": self.internal_time,
+                    "energy": round(self.energy.level(), 2),
+                    "strain": round(self.overload.strain, 2),
+                }
+            )
+            self.world.update(civilisation=civilisation_state)
 
             # Base metabolism
             self.physics.allow(1.0, self.energy.level())
@@ -352,7 +368,32 @@ class LifeLoop:
                 energy=self.energy.level(),
                 strain=self.overload.strain,
                 last_action=action,
+                civilisation=self.civilisation.report(
+                    {
+                        "weather": current_weather,
+                        "light": current_light,
+                        "time_world": self.world_time.t,
+                        "time_internal": self.internal_time,
+                        "energy": round(self.energy.level(), 2),
+                        "strain": round(self.overload.strain, 2),
+                    }
+                ),
                 time=self.world_time.t,
+            )
+            self.civilisation.save(
+                {
+                    "identity": self.identity.uid,
+                    "pulse_alive": self.pulse.is_alive(),
+                    "world_context": {
+                        "weather": current_weather,
+                        "light": current_light,
+                        "time_world": self.world_time.t,
+                        "time_internal": self.internal_time,
+                        "energy": round(self.energy.level(), 2),
+                        "strain": round(self.overload.strain, 2),
+                    },
+                    "memory": self.memory.recent(5),
+                }
             )
 
             # Memory decay
