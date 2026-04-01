@@ -1,69 +1,62 @@
 {
-  "tick": 7,
-  "season": "Bloom",
-  "population": 4,
+  "tick": 1,
+  "season": "Seed",
+  "population": 6,
   "dominant_choice": "secure",
   "resources": {
     "food": 0.62,
-    "materials": 0.61,
-    "knowledge": 1.0,
-    "culture": 0.75,
-    "security": 0.96,
-    "spirit": 0.99
+    "materials": 0.42,
+    "knowledge": 0.52,
+    "culture": 0.35,
+    "security": 0.84,
+    "spirit": 0.59
   },
-  "avg_wisdom": 0.52,
-  "house_count": 3,
+  "avg_wisdom": 0.4,
+  "house_count": 4,
+  "scenario": "park_playtime",
   "dilemmas": [
-    "Safety feels fragile. Work can go to shelter or to discovery.",
-    "New ideas are ready. The village can risk building something lasting.",
-    "Conversation is changing the settlement's choices across homes, streets, and the plaza."
+    "Scenario active: park_playtime."
   ],
-  "story": "Tick 7: In Bloom season under storm skies, Mira the Builder moved to Mira House at (2, 0, 0) and chose to secure because danger feels close and the village needs protection.",
+  "story": "Tick 1: In Seed season under clear skies, Sol the Thinker moved to Learning Hub at (6, 5, 1) and chose to learn because curiosity is pulling life toward discovery.",
   "recent_events": [
-    "At 3D Spatial Plaza, Mira and Tala talked about trust and family.",
-    "Tick 3: In Seed season under clear skies, Sol the Thinker moved to Language Hub at (6, 4, 1) and chose to learn because curiosity is pulling life toward discovery.",
-    "Tick 4: In Seed season under clear skies, Sol the Thinker moved to Language Hub at (6, 4, 1) and chose to learn because curiosity is pulling life toward discovery.",
-    "At Language Hub, Sol and Tala talked about maps, symbols, and the shape of the world.",
-    "Tick 5: In Seed season under clear skies, Ari the Grower moved to Main Street at (2, 1, 0) and chose to secure because danger feels close and the village needs protection.",
-    "At Park, Mira and Tala talked about recovery and safety.",
-    "Tick 6: In Bloom season under clear skies, Mira the Builder moved to Shared House at (4, 0, 0) and chose to bond because the settlement needs trust to stay alive.",
-    "At Shared House, Mira and Sol talked about trust and family.",
-    "Tick 7: In Bloom season under storm skies, Mira the Builder moved to Mira House at (2, 0, 0) and chose to secure because danger feels close and the village needs protection.",
-    "At Shared House, Sol and Tala talked about recovery and safety."
+    "Tick 1: In Seed season under clear skies, Sol the Thinker moved to Learning Hub at (6, 5, 1) and chose to learn because curiosity is pulling life toward discovery.",
+    "At Main Street, Mira and Tala talked about shelter and defense.",
+    "car_01 moved through Main Street.",
+    "car_02 moved through Workplace."
   ],
   "recent_conversations": [
     {
-      "place_id": "house_03",
-      "place_label": "Shared House",
+      "place_id": "street_01",
+      "place_label": "Main Street",
       "participants": [
-        "Sol",
+        "Mira",
         "Tala"
       ],
-      "topic": "recovery and safety",
+      "topic": "shelter and defense",
       "lines": [
-        "Sol: We should focus on recovery and safety.",
-        "Tala: I agree, but the village must choose carefully."
+        "Mira: We should focus on shelter and defense.",
+        "Tala: I agree, and the neighbourhood will shape us."
       ],
-      "summary": "At Shared House, Sol and Tala talked about recovery and safety."
+      "summary": "At Main Street, Mira and Tala talked about shelter and defense."
     }
   ],
   "world_context": {
-    "weather": "storm",
-    "light": "night",
-    "time_world": 7.0,
-    "time_internal": 7,
-    "energy": 2.4,
-    "strain": 0.7
+    "weather": "clear",
+    "light": "day",
+    "time_world": 1.0,
+    "time_internal": 1,
+    "energy": 9.0,
+    "strain": 0.1
   },
   "spatial_frame": {
     "bounds": {
       "x": [
         0,
-        6
+        7
       ],
       "y": [
         0,
-        4
+        5
       ],
       "z": [
         0,
@@ -78,10 +71,8 @@
         "x": 0,
         "y": 0,
         "z": 0,
-        "occupants": [
-          "Ari"
-        ],
-        "occupant_count": 1,
+        "occupants": [],
+        "occupant_count": 0,
         "connections": [
           "street_01"
         ]
@@ -93,10 +84,8 @@
         "x": 2,
         "y": 0,
         "z": 0,
-        "occupants": [
-          "Mira"
-        ],
-        "occupant_count": 1,
+        "occupants": [],
+        "occupant_count": 0,
         "connections": [
           "street_01"
         ]
@@ -108,11 +97,21 @@
         "x": 4,
         "y": 0,
         "z": 0,
-        "occupants": [
-          "Sol",
-          "Tala"
-        ],
-        "occupant_count": 2,
+        "occupants": [],
+        "occupant_count": 0,
+        "connections": [
+          "street_01"
+        ]
+      },
+      {
+        "place_id": "house_04",
+        "label": "Neighbour House",
+        "kind": "house",
+        "x": 6,
+        "y": 0,
+        "z": 0,
+        "occupants": [],
+        "occupant_count": 0,
         "connections": [
           "street_01"
         ]
@@ -121,36 +120,59 @@
         "place_id": "street_01",
         "label": "Main Street",
         "kind": "street",
-        "x": 2,
+        "x": 3,
+        "y": 1,
+        "z": 0,
+        "occupants": [
+          "Mira",
+          "Tala"
+        ],
+        "occupant_count": 2,
+        "connections": [
+          "house_01",
+          "house_02",
+          "house_03",
+          "house_04",
+          "market_01",
+          "park_01",
+          "school_01",
+          "work_01",
+          "road_01"
+        ]
+      },
+      {
+        "place_id": "road_01",
+        "label": "Village Road",
+        "kind": "road",
+        "x": 5,
         "y": 1,
         "z": 0,
         "occupants": [],
         "occupant_count": 0,
         "connections": [
-          "house_01",
-          "house_02",
-          "house_03",
-          "market_01",
-          "park_01",
-          "plaza_01"
+          "street_01",
+          "park_02",
+          "work_01"
         ]
       },
       {
         "place_id": "market_01",
         "label": "Market",
         "kind": "market",
-        "x": 5,
+        "x": 6,
         "y": 2,
         "z": 0,
-        "occupants": [],
-        "occupant_count": 0,
+        "occupants": [
+          "Ari"
+        ],
+        "occupant_count": 1,
         "connections": [
           "street_01"
         ]
       },
       {
         "place_id": "park_01",
-        "label": "Park",
+        "label": "Neighbourhood Park",
         "kind": "park",
         "x": 0,
         "y": 3,
@@ -163,31 +185,99 @@
         ]
       },
       {
+        "place_id": "park_02",
+        "label": "Play Park",
+        "kind": "park",
+        "x": 7,
+        "y": 3,
+        "z": 1,
+        "occupants": [],
+        "occupant_count": 0,
+        "connections": [
+          "road_01"
+        ]
+      },
+      {
+        "place_id": "school_01",
+        "label": "Primary School",
+        "kind": "school",
+        "x": 2,
+        "y": 4,
+        "z": 0,
+        "occupants": [
+          "Lina"
+        ],
+        "occupant_count": 1,
+        "connections": [
+          "street_01",
+          "plaza_01"
+        ]
+      },
+      {
+        "place_id": "work_01",
+        "label": "Workplace",
+        "kind": "workplace",
+        "x": 7,
+        "y": 4,
+        "z": 0,
+        "occupants": [
+          "Noah"
+        ],
+        "occupant_count": 1,
+        "connections": [
+          "road_01"
+        ]
+      },
+      {
         "place_id": "plaza_01",
         "label": "3D Spatial Plaza",
         "kind": "plaza",
-        "x": 3,
-        "y": 4,
+        "x": 4,
+        "y": 5,
         "z": 2,
         "occupants": [],
         "occupant_count": 0,
         "connections": [
-          "street_01",
           "park_01",
+          "school_01",
           "learning_01"
         ]
       },
       {
         "place_id": "learning_01",
-        "label": "Language Hub",
+        "label": "Learning Hub",
         "kind": "learning_center",
         "x": 6,
-        "y": 4,
+        "y": 5,
         "z": 1,
-        "occupants": [],
-        "occupant_count": 0,
+        "occupants": [
+          "Sol"
+        ],
+        "occupant_count": 1,
         "connections": [
           "plaza_01"
+        ]
+      }
+    ],
+    "vehicles": [
+      {
+        "id": "car_01",
+        "location": "street_01",
+        "label": "Main Street",
+        "xyz": [
+          3,
+          1,
+          0
+        ]
+      },
+      {
+        "id": "car_02",
+        "location": "work_01",
+        "label": "Workplace",
+        "xyz": [
+          7,
+          4,
+          0
         ]
       }
     ]
@@ -198,17 +288,17 @@
       "role": "Grower",
       "choice": "eat",
       "reason": "food stores feel too low for comfort",
-      "location": "house_01",
-      "location_label": "Ari House",
+      "location": "market_01",
+      "location_label": "Market",
       "xyz": [
-        0,
-        0,
+        6,
+        2,
         0
       ],
-      "vitality": 0.79,
-      "hunger": 0.93,
-      "belonging": 0.68,
-      "curiosity": 0.38,
+      "vitality": 0.75,
+      "hunger": 0.79,
+      "belonging": 0.6,
+      "curiosity": 0.32,
       "conversation": ""
     },
     {
@@ -216,354 +306,93 @@
       "role": "Builder",
       "choice": "secure",
       "reason": "danger feels close and the village needs protection",
-      "location": "house_02",
-      "location_label": "Mira House",
+      "location": "street_01",
+      "location_label": "Main Street",
       "xyz": [
-        2,
-        0,
+        3,
+        1,
         0
       ],
-      "vitality": 0.63,
-      "hunger": 0.54,
-      "belonging": 0.68,
-      "curiosity": 0.47,
-      "conversation": ""
+      "vitality": 0.64,
+      "hunger": 0.56,
+      "belonging": 0.46,
+      "curiosity": 0.41,
+      "conversation": "Mira: We should focus on shelter and defense."
     },
     {
       "name": "Sol",
       "role": "Thinker",
-      "choice": "rest",
-      "reason": "the body needs recovery before it can help others",
-      "location": "house_03",
-      "location_label": "Shared House",
+      "choice": "learn",
+      "reason": "curiosity is pulling life toward discovery",
+      "location": "learning_01",
+      "location_label": "Learning Hub",
       "xyz": [
-        4,
-        0,
-        0
+        6,
+        5,
+        1
       ],
-      "vitality": 0.52,
-      "hunger": 0.47,
-      "belonging": 0.51,
-      "curiosity": 0.47,
-      "conversation": "Sol: We should focus on recovery and safety."
+      "vitality": 0.53,
+      "hunger": 0.49,
+      "belonging": 0.43,
+      "curiosity": 0.68,
+      "conversation": ""
     },
     {
       "name": "Tala",
       "role": "Carer",
       "choice": "secure",
       "reason": "danger feels close and the village needs protection",
-      "location": "house_03",
-      "location_label": "Shared House",
+      "location": "street_01",
+      "location_label": "Main Street",
       "xyz": [
-        4,
-        0,
+        3,
+        1,
         0
       ],
-      "vitality": 0.71,
-      "hunger": 0.74,
-      "belonging": 0.83,
-      "curiosity": 0.37,
-      "conversation": "Tala: I agree, but the village must choose carefully."
+      "vitality": 0.67,
+      "hunger": 0.6,
+      "belonging": 0.75,
+      "curiosity": 0.39,
+      "conversation": "Tala: I agree, and the neighbourhood will shape us."
+    },
+    {
+      "name": "Noah",
+      "role": "Worker",
+      "choice": "secure",
+      "reason": "danger feels close and the village needs protection",
+      "location": "work_01",
+      "location_label": "Workplace",
+      "xyz": [
+        7,
+        4,
+        0
+      ],
+      "vitality": 0.66,
+      "hunger": 0.58,
+      "belonging": 0.52,
+      "curiosity": 0.31,
+      "conversation": ""
+    },
+    {
+      "name": "Lina",
+      "role": "Student",
+      "choice": "learn",
+      "reason": "curiosity is pulling life toward discovery",
+      "location": "school_01",
+      "location_label": "Primary School",
+      "xyz": [
+        2,
+        4,
+        0
+      ],
+      "vitality": 0.69,
+      "hunger": 0.61,
+      "belonging": 0.61,
+      "curiosity": 0.62,
+      "conversation": ""
     }
   ],
-  "identity": "ba7fad49-5ffc-4844-8f97-2b07c6a2b99d",
+  "identity": "a84bbadd-8ac6-4510-b5d6-c79b57cb4273",
   "pulse_alive": true,
-  "memory": [
-    {
-      "event": {
-        "type": "pain_withdrawal",
-        "strain": 0.6,
-        "body_state": null,
-        "world": {
-          "energy": 4.0,
-          "strain": 0.6,
-          "last_action": null,
-          "last_sensation": {
-            "weather": "storm",
-            "light": "night",
-            "regulation": "stable"
-          },
-          "time": 7.0,
-          "current_place": "house",
-          "known_places": [
-            "house"
-          ],
-          "civilisation": {
-            "tick": 7,
-            "season": "Bloom",
-            "population": 4,
-            "dominant_choice": "secure",
-            "resources": {
-              "food": 0.62,
-              "materials": 0.61,
-              "knowledge": 1.0,
-              "culture": 0.75,
-              "security": 0.96,
-              "spirit": 0.99
-            },
-            "avg_wisdom": 0.52,
-            "house_count": 3,
-            "dilemmas": [
-              "Safety feels fragile. Work can go to shelter or to discovery.",
-              "New ideas are ready. The village can risk building something lasting.",
-              "Conversation is changing the settlement's choices across homes, streets, and the plaza."
-            ],
-            "story": "Tick 7: In Bloom season under storm skies, Mira the Builder moved to Mira House at (2, 0, 0) and chose to secure because danger feels close and the village needs protection.",
-            "recent_events": [
-              "At 3D Spatial Plaza, Mira and Tala talked about trust and family.",
-              "Tick 3: In Seed season under clear skies, Sol the Thinker moved to Language Hub at (6, 4, 1) and chose to learn because curiosity is pulling life toward discovery.",
-              "Tick 4: In Seed season under clear skies, Sol the Thinker moved to Language Hub at (6, 4, 1) and chose to learn because curiosity is pulling life toward discovery.",
-              "At Language Hub, Sol and Tala talked about maps, symbols, and the shape of the world.",
-              "Tick 5: In Seed season under clear skies, Ari the Grower moved to Main Street at (2, 1, 0) and chose to secure because danger feels close and the village needs protection.",
-              "At Park, Mira and Tala talked about recovery and safety.",
-              "Tick 6: In Bloom season under clear skies, Mira the Builder moved to Shared House at (4, 0, 0) and chose to bond because the settlement needs trust to stay alive.",
-              "At Shared House, Mira and Sol talked about trust and family.",
-              "Tick 7: In Bloom season under storm skies, Mira the Builder moved to Mira House at (2, 0, 0) and chose to secure because danger feels close and the village needs protection.",
-              "At Shared House, Sol and Tala talked about recovery and safety."
-            ],
-            "recent_conversations": [
-              {
-                "place_id": "house_03",
-                "place_label": "Shared House",
-                "participants": [
-                  "Sol",
-                  "Tala"
-                ],
-                "topic": "recovery and safety",
-                "lines": [
-                  "Sol: We should focus on recovery and safety.",
-                  "Tala: I agree, but the village must choose carefully."
-                ],
-                "summary": "At Shared House, Sol and Tala talked about recovery and safety."
-              }
-            ],
-            "world_context": {
-              "weather": "storm",
-              "light": "night",
-              "time_world": 7.0,
-              "time_internal": 7,
-              "energy": 4.0,
-              "strain": 0.6
-            },
-            "spatial_frame": {
-              "bounds": {
-                "x": [
-                  0,
-                  6
-                ],
-                "y": [
-                  0,
-                  4
-                ],
-                "z": [
-                  0,
-                  2
-                ]
-              },
-              "nodes": [
-                {
-                  "place_id": "house_01",
-                  "label": "Ari House",
-                  "kind": "house",
-                  "x": 0,
-                  "y": 0,
-                  "z": 0,
-                  "occupants": [
-                    "Ari"
-                  ],
-                  "occupant_count": 1,
-                  "connections": [
-                    "street_01"
-                  ]
-                },
-                {
-                  "place_id": "house_02",
-                  "label": "Mira House",
-                  "kind": "house",
-                  "x": 2,
-                  "y": 0,
-                  "z": 0,
-                  "occupants": [
-                    "Mira"
-                  ],
-                  "occupant_count": 1,
-                  "connections": [
-                    "street_01"
-                  ]
-                },
-                {
-                  "place_id": "house_03",
-                  "label": "Shared House",
-                  "kind": "house",
-                  "x": 4,
-                  "y": 0,
-                  "z": 0,
-                  "occupants": [
-                    "Sol",
-                    "Tala"
-                  ],
-                  "occupant_count": 2,
-                  "connections": [
-                    "street_01"
-                  ]
-                },
-                {
-                  "place_id": "street_01",
-                  "label": "Main Street",
-                  "kind": "street",
-                  "x": 2,
-                  "y": 1,
-                  "z": 0,
-                  "occupants": [],
-                  "occupant_count": 0,
-                  "connections": [
-                    "house_01",
-                    "house_02",
-                    "house_03",
-                    "market_01",
-                    "park_01",
-                    "plaza_01"
-                  ]
-                },
-                {
-                  "place_id": "market_01",
-                  "label": "Market",
-                  "kind": "market",
-                  "x": 5,
-                  "y": 2,
-                  "z": 0,
-                  "occupants": [],
-                  "occupant_count": 0,
-                  "connections": [
-                    "street_01"
-                  ]
-                },
-                {
-                  "place_id": "park_01",
-                  "label": "Park",
-                  "kind": "park",
-                  "x": 0,
-                  "y": 3,
-                  "z": 1,
-                  "occupants": [],
-                  "occupant_count": 0,
-                  "connections": [
-                    "street_01",
-                    "plaza_01"
-                  ]
-                },
-                {
-                  "place_id": "plaza_01",
-                  "label": "3D Spatial Plaza",
-                  "kind": "plaza",
-                  "x": 3,
-                  "y": 4,
-                  "z": 2,
-                  "occupants": [],
-                  "occupant_count": 0,
-                  "connections": [
-                    "street_01",
-                    "park_01",
-                    "learning_01"
-                  ]
-                },
-                {
-                  "place_id": "learning_01",
-                  "label": "Language Hub",
-                  "kind": "learning_center",
-                  "x": 6,
-                  "y": 4,
-                  "z": 1,
-                  "occupants": [],
-                  "occupant_count": 0,
-                  "connections": [
-                    "plaza_01"
-                  ]
-                }
-              ]
-            },
-            "citizens": [
-              {
-                "name": "Ari",
-                "role": "Grower",
-                "choice": "eat",
-                "reason": "food stores feel too low for comfort",
-                "location": "house_01",
-                "location_label": "Ari House",
-                "xyz": [
-                  0,
-                  0,
-                  0
-                ],
-                "vitality": 0.79,
-                "hunger": 0.93,
-                "belonging": 0.68,
-                "curiosity": 0.38,
-                "conversation": ""
-              },
-              {
-                "name": "Mira",
-                "role": "Builder",
-                "choice": "secure",
-                "reason": "danger feels close and the village needs protection",
-                "location": "house_02",
-                "location_label": "Mira House",
-                "xyz": [
-                  2,
-                  0,
-                  0
-                ],
-                "vitality": 0.63,
-                "hunger": 0.54,
-                "belonging": 0.68,
-                "curiosity": 0.47,
-                "conversation": "Mira: We should focus on trust and family."
-              },
-              {
-                "name": "Sol",
-                "role": "Thinker",
-                "choice": "rest",
-                "reason": "the body needs recovery before it can help others",
-                "location": "house_03",
-                "location_label": "Shared House",
-                "xyz": [
-                  4,
-                  0,
-                  0
-                ],
-                "vitality": 0.52,
-                "hunger": 0.47,
-                "belonging": 0.51,
-                "curiosity": 0.47,
-                "conversation": "Sol: I agree, but the village must choose carefully."
-              },
-              {
-                "name": "Tala",
-                "role": "Carer",
-                "choice": "secure",
-                "reason": "danger feels close and the village needs protection",
-                "location": "house_03",
-                "location_label": "Shared House",
-                "xyz": [
-                  4,
-                  0,
-                  0
-                ],
-                "vitality": 0.71,
-                "hunger": 0.74,
-                "belonging": 0.83,
-                "curiosity": 0.37,
-                "conversation": ""
-              }
-            ]
-          }
-        },
-        "time_internal": 7,
-        "time_real": 322.6225609999965,
-        "time_world": 7.0
-      },
-      "time": "2026-04-01T18:37:38.164158+00:00",
-      "salience": 1.0
-    }
-  ]
+  "memory": []
 }
