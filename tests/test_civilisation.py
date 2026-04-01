@@ -45,7 +45,7 @@ def test_life_loop_publishes_civilisation_and_saves_json(tmp_path):
     save_path = tmp_path / "a7do_state.json"
     written = life.civilisation.save(
         {
-            "identity": life.identity.uid,
+            "identity": life.identity.id,
             "pulse_alive": life.pulse.is_alive(),
             "world_context": civilisation["world_context"],
         },
@@ -53,6 +53,6 @@ def test_life_loop_publishes_civilisation_and_saves_json(tmp_path):
     )
 
     payload = json.loads(written.read_text(encoding="utf-8"))
-    assert payload["identity"] == life.identity.uid
+    assert payload["identity"] == life.identity.id
     assert payload["population"] == civilisation["population"]
     assert payload["story"] == life.civilisation.story

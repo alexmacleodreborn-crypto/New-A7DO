@@ -382,7 +382,7 @@ class LifeLoop:
             )
             self.civilisation.save(
                 {
-                    "identity": self.identity.uid,
+                    "identity": self.identity.id,
                     "pulse_alive": self.pulse.is_alive(),
                     "world_context": {
                         "weather": current_weather,
