@@ -351,6 +351,17 @@ def build_ecg_series(postnatal_days: int, points: int = 100) -> list[float]:
         series.append(max(85, min(160, base + drift + flutter)))
     return series
 
+
+def build_fetal_heartbeat_series(heartbeat_bpm: int, points: int = 100) -> list[float]:
+    if heartbeat_bpm <= 0:
+        return [0.0] * points
+    series = []
+    for idx in range(points):
+        drift = 4 * math.sin(idx / 5.5)
+        flutter = 2 * math.sin(idx / 2.2)
+        series.append(max(60, min(190, heartbeat_bpm + drift + flutter)))
+    return series
+
 # --------------------------------------------------
 # SIDEBAR CONTROLS
 # --------------------------------------------------
@@ -458,6 +469,29 @@ pregnancy_timeline = build_development_timeline(
     postnatal_days,
     int(birth_weeks),
 )
+limb_rows = [
+    {"limb": "arms", **womb_snapshot["anatomy"]["arms"]},
+    {"limb": "legs", **womb_snapshot["anatomy"]["legs"]},
+    {"limb": "hands", **womb_snapshot["anatomy"]["hands"]},
+    {"limb": "feet", **womb_snapshot["anatomy"]["feet"]},
+]
+combined_events = []
+combined_events.extend(
+    {"source": "womb", "event": event} for event in womb_snapshot["recent_events"][-5:]
+)
+combined_events.extend(
+    {"source": "civilisation", "event": event}
+    for event in civilisation["recent_events"][-5:]
+)
+combined_events.extend(
+    {"source": "dashboard", "event": item["message"]}
+    for item in st.session_state.dashboard_messages[-5:]
+)
+auto_learning_state = (
+    "Automatic after birth ticks"
+    if is_postnatal and (st.session_state.auto_run or st.session_state.run_ticks_remaining > 0)
+    else "Automatic when life ticks run"
+)
 
 top1, top2, top3, top4 = st.columns(4)
 top1.metric("Gestational Weeks", f"{gestational_weeks:.2f}")
@@ -488,10 +522,23 @@ tab_overview, tab_civilisation, tab_pregnancy, tab_memory, tab_language = st.tab
 )
 
 with tab_overview:
+    summary1, summary2, summary3, summary4 = st.columns(4)
+    summary1.metric("Heartbeat BPM", womb_snapshot["fetal_heartbeat_bpm"] if not is_postnatal else int(build_ecg_series(postnatal_days, 1)[0]))
+    summary2.metric("Arms", womb_snapshot["anatomy"]["arms"]["stage"])
+    summary3.metric("Legs", womb_snapshot["anatomy"]["legs"]["stage"])
+    summary4.metric("Learning", auto_learning_state)
+
     overview_left, overview_right = st.columns([1.2, 1])
     with overview_left:
         st.subheader("❤️ Pulse")
         st.write("Alive:", life.pulse.is_alive())
+        st.subheader("Heartbeat / ECG")
+        if is_postnatal:
+            st.line_chart(build_ecg_series(postnatal_days))
+        else:
+            st.line_chart(build_fetal_heartbeat_series(womb_snapshot["fetal_heartbeat_bpm"]))
+        st.subheader("Limb Growth")
+        st.dataframe(limb_rows, width="stretch", hide_index=True)
         st.subheader("🧠 Recent Memory")
         st.json(life.memory.recent(5))
     with overview_right:
@@ -502,6 +549,8 @@ with tab_overview:
             st.line_chart(build_ecg_series(postnatal_days))
         else:
             st.info("A7DO is still in the womb. Growth and maternal movement are active before birth.")
+        st.subheader("Automatic Events")
+        st.json(combined_events[-10:])
 
 with tab_civilisation:
     st.subheader("🏘️ Life Civilisation")
@@ -581,6 +630,8 @@ with tab_memory:
         st.json(st.session_state.dashboard_messages)
     else:
         st.write("No messages yet.")
+    st.subheader("Unified Event Stream")
+    st.json(combined_events[-10:])
 
 st.subheader("⌨️ Keyboard Message")
 
@@ -611,6 +662,7 @@ with tab_language:
     st.write(f"**Vocabulary Size:** {len(st.session_state.english_vocab)}")
     st.write(f"**Sentence Patterns Learned:** {len(st.session_state.english_patterns)}")
     st.write(f"**Intent:** {st.session_state.english_intent:.2f}")
+    st.write(f"**Automatic Learning:** {auto_learning_state}")
 
     st.caption("Learning is advanced on each life tick, or manually using the button below.")
     if st.button("Advance Language Cycle"):
