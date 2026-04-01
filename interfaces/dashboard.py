@@ -3,8 +3,28 @@ from __future__ import annotations
 from collections import deque
 import threading
 
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+try:
+    from fastapi import FastAPI
+    from fastapi.responses import HTMLResponse
+    FASTAPI_AVAILABLE = True
+except ImportError:
+    FASTAPI_AVAILABLE = False
+
+    class FastAPI:  # type: ignore[override]
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def get(self, *args, **kwargs):
+            def decorator(fn):
+                return fn
+            return decorator
+
+        def post(self, *args, **kwargs):
+            def decorator(fn):
+                return fn
+            return decorator
+
+    HTMLResponse = str
 
 
 app = FastAPI(title="A7DO Dashboard")
@@ -186,6 +206,9 @@ def record_state_snapshot(loop) -> None:
 def start_dashboard(loop):
     global loop_instance
     loop_instance = loop
+
+    if not FASTAPI_AVAILABLE:
+        raise RuntimeError("fastapi is not installed")
 
     import uvicorn
 
