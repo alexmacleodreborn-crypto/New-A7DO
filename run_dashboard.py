@@ -45,6 +45,15 @@ life_loop_mod = load_module(
     "00_CORE_EXISTENCE/bootstrap/life_loop.py"
 )
 LifeLoop = life_loop_mod.LifeLoop
+life_stages_mod = load_module(
+    "life_stages",
+    "00_CORE_EXISTENCE/lifecycle/stages.py",
+)
+HumanDevelopment = load_module(
+    "human_development",
+    "a7do_human_development.py",
+).HumanDevelopment
+LifeStage = life_stages_mod.LifeStage
 
 # --------------------------------------------------
 # SESSION STATE
@@ -53,7 +62,16 @@ if "life" not in st.session_state:
     world_time = WorldTime()
     world_state = WorldState(default_place="house")
     st.session_state.world_env = World.create(world_state=world_state)
-    st.session_state.life = LifeLoop(world_time, world_state)
+    st.session_state.life = LifeLoop(
+        world_time,
+        world_state,
+        stage_schedule=[
+            (0, LifeStage.WOMB),
+            (1, LifeStage.BIRTH),
+            (120, LifeStage.INFANT),
+            (600, LifeStage.TODDLER),
+        ],
+    )
 
 if "run_ticks_remaining" not in st.session_state:
     st.session_state.run_ticks_remaining = 0
@@ -61,11 +79,11 @@ if "run_ticks_remaining" not in st.session_state:
 if "dashboard_messages" not in st.session_state:
     st.session_state.dashboard_messages = []
 
-if "pregnancy_weeks" not in st.session_state:
-    st.session_state.pregnancy_weeks = 7.43
-
-if "pregnancy_days" not in st.session_state:
-    st.session_state.pregnancy_days = 52
+if "human_development" not in st.session_state:
+    st.session_state.human_development = HumanDevelopment(
+        gestational_weeks=7.43,
+        biological_days=52,
+    )
 
 if "pregnancy_running" not in st.session_state:
     st.session_state.pregnancy_running = False
@@ -74,6 +92,7 @@ if "auto_run" not in st.session_state:
     st.session_state.auto_run = False
 
 life = st.session_state.life
+human = st.session_state.human_development
 
 # --------------------------------------------------
 # ENGLISH LEARNING STATE
@@ -216,8 +235,22 @@ def advance_english_learning() -> float:
 
 
 def advance_pregnancy(days: int = 1) -> None:
-    st.session_state.pregnancy_days += days
-    st.session_state.pregnancy_weeks += days / 7.0
+    before_birth = st.session_state.human_development.is_born
+    snapshot = st.session_state.human_development.advance_days(days)
+    if snapshot["is_born"] and not before_birth:
+        st.session_state.dashboard_messages.append(
+            {
+                "timestamp": life.clock.now(),
+                "message": "Birth event reached automatically. A7DO has entered the postnatal world.",
+            }
+        )
+    st.session_state.human_development.save(
+        {
+            "identity": life.identity.id,
+            "pulse_alive": life.pulse.is_alive(),
+        }
+    )
+    return snapshot
 
 
 def pregnancy_trimester(weeks: float) -> int:
