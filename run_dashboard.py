@@ -239,6 +239,16 @@ if st.session_state.run_ticks_remaining > 0:
 # --------------------------------------------------
 st.title("🧠 A7DO — Live Introspection Dashboard")
 
+world_snapshot = life.world.snapshot()
+civilisation = world_snapshot.get("civilisation") or life.civilisation.report(
+    {
+        "time_world": life.world_time.t,
+        "time_internal": life.internal_time,
+        "energy": round(life.energy.level(), 2),
+        "strain": round(life.overload.strain, 2),
+    }
+)
+
 st.subheader("🌍 World / Body State")
 st.json({
     "energy": life.energy.level(),
@@ -248,7 +258,36 @@ st.json({
     "time_internal": life.internal_time,
     "time_real": life.clock.now(),
     "time_world": life.world_time.t,
+    "civilisation_tick": civilisation["tick"],
+    "civilisation_season": civilisation["season"],
 })
+
+st.subheader("🏘️ Life Civilisation")
+metric1, metric2, metric3, metric4 = st.columns(4)
+metric1.metric("Population", civilisation["population"])
+metric2.metric("Season", civilisation["season"])
+metric3.metric("Dominant Choice", civilisation["dominant_choice"])
+metric4.metric("Avg Wisdom", civilisation["avg_wisdom"])
+
+resources_df = {
+    "resource": list(civilisation["resources"].keys()),
+    "level": list(civilisation["resources"].values()),
+}
+citizens_df = {
+    "name": [citizen["name"] for citizen in civilisation["citizens"]],
+    "role": [citizen["role"] for citizen in civilisation["citizens"]],
+    "choice": [citizen["choice"] for citizen in civilisation["citizens"]],
+    "reason": [citizen["reason"] for citizen in civilisation["citizens"]],
+    "vitality": [citizen["vitality"] for citizen in civilisation["citizens"]],
+}
+
+st.write(civilisation["story"])
+st.bar_chart(resources_df, x="resource", y="level")
+st.dataframe(citizens_df, use_container_width=True, hide_index=True)
+st.write("Dilemmas")
+st.json(civilisation["dilemmas"])
+st.write("Recent settlement events")
+st.json(civilisation["recent_events"])
 
 st.subheader("🧠 Recent Memory")
 st.json(life.memory.recent(5))
