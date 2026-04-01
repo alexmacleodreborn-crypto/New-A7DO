@@ -357,8 +357,11 @@ def build_ecg_series(postnatal_days: int, points: int = 100) -> list[float]:
 st.sidebar.title("🧠 A7DO Control")
 
 if st.sidebar.button("🔘 Tick (1)"):
-    life.tick()
-    advance_english_learning()
+    if human.is_born:
+        life.tick()
+        advance_english_learning()
+    else:
+        advance_pregnancy(1)
 
 run_n = st.sidebar.number_input(
     "Run N ticks",
@@ -405,20 +408,26 @@ if st.sidebar.button("Pause Pregnancy Auto"):
 if st.session_state.pregnancy_running:
     auto_step_days = max(
         1,
-        int(round(1 + (st.session_state.pregnancy_weeks / 40.0) * 2)),
+        int(round(1 + (human.gestational_weeks / 40.0) * 2)),
     )
     advance_pregnancy(auto_step_days)
 
 if st.session_state.run_ticks_remaining > 0:
-    life.tick()
-    advance_english_learning()
+    if human.is_born:
+        life.tick()
+        advance_english_learning()
+    else:
+        advance_pregnancy(1)
     st.session_state.run_ticks_remaining -= 1
     time.sleep(0.05)
     st.rerun()
 
 if st.session_state.auto_run:
-    life.tick()
-    advance_english_learning()
+    if human.is_born:
+        life.tick()
+        advance_english_learning()
+    else:
+        advance_pregnancy(1)
     time.sleep(auto_sleep / 1000.0)
     st.rerun()
 
