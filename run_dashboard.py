@@ -4,6 +4,7 @@ Manual Tick Control (Authoritative Time Boundary)
 """
 
 import importlib.util
+import math
 import random
 import re
 import time
@@ -59,6 +60,18 @@ if "run_ticks_remaining" not in st.session_state:
 
 if "dashboard_messages" not in st.session_state:
     st.session_state.dashboard_messages = []
+
+if "pregnancy_weeks" not in st.session_state:
+    st.session_state.pregnancy_weeks = 7.43
+
+if "pregnancy_days" not in st.session_state:
+    st.session_state.pregnancy_days = 52
+
+if "pregnancy_running" not in st.session_state:
+    st.session_state.pregnancy_running = False
+
+if "auto_run" not in st.session_state:
+    st.session_state.auto_run = False
 
 life = st.session_state.life
 
@@ -200,6 +213,110 @@ def advance_english_learning() -> float:
         st.session_state.english_expression_ready = True
 
     return understanding
+
+
+def advance_pregnancy(days: int = 1) -> None:
+    st.session_state.pregnancy_days += days
+    st.session_state.pregnancy_weeks += days / 7.0
+
+
+def pregnancy_trimester(weeks: float) -> int:
+    if weeks < 13:
+        return 1
+    if weeks < 27:
+        return 2
+    return 3
+
+
+def build_development_timeline(
+    gestational_weeks: float,
+    postnatal_days: int,
+    birth_weeks: int = 40,
+) -> list[dict[str, str]]:
+    prenatal_events = [
+        (4, "Neural tube closes"),
+        (6, "Heart begins coordinated beating"),
+        (8, "Limb buds form"),
+        (12, "Reflexes appear"),
+        (16, "Movement becomes strong"),
+        (24, "Sensory pathways online"),
+        (28, "Sleep/wake cycles stabilize"),
+        (32, "Autonomic regulation matures"),
+        (36, "Systems prepare for birth"),
+        (birth_weeks, "Birth event"),
+    ]
+    timeline = []
+    for week, label in prenatal_events:
+        status = "ONLINE" if gestational_weeks >= week else "UPCOMING"
+        if week == birth_weeks and gestational_weeks >= birth_weeks:
+            status = "BIRTH_EVENT"
+        timeline.append(
+            {
+                "phase": "Prenatal",
+                "time": f"Week {week}",
+                "event": label,
+                "status": status,
+            }
+        )
+
+    postnatal_events = [
+        (0, "External world activation"),
+        (1, "Breathing + circulation adjust"),
+        (2, "ECG monitoring online"),
+        (7, "Feeding rhythm stabilizes"),
+        (14, "Thermal regulation steadies"),
+        (30, "Early motor control strengthens"),
+    ]
+    for day, label in postnatal_events:
+        status = "LOCKED"
+        if gestational_weeks >= birth_weeks:
+            status = "ONLINE" if postnatal_days >= day else "UPCOMING"
+        timeline.append(
+            {
+                "phase": "Postnatal",
+                "time": f"Day {day}",
+                "event": label,
+                "status": status,
+            }
+        )
+    return timeline
+
+
+def logistic(x: float, mid: float, k: float) -> float:
+    return 1.0 / (1.0 + math.exp(-k * (x - mid)))
+
+
+def build_growth_metrics(gestational_weeks: float) -> dict[str, float | str]:
+    weight_kg = 0.01 + 3.3 * logistic(gestational_weeks, mid=30, k=0.33)
+    length_cm = 3.0 + 47.0 * logistic(gestational_weeks, mid=28, k=0.28)
+    head_cm = 2.5 + 32.0 * logistic(gestational_weeks, mid=26, k=0.30)
+    intake = 8.0 + gestational_weeks * 0.25
+    work = 1.8 + gestational_weeks * 0.08
+    heat = 1.2 + gestational_weeks * 0.05
+    energy_next = max(0.0, intake - work - heat)
+    growth_cost = 2.5 + gestational_weeks * 0.12
+
+    return {
+        "weight_kg": round(weight_kg, 3),
+        "length_cm": round(length_cm, 1),
+        "head_circumference_cm": round(head_cm, 1),
+        "energy_intake": round(intake, 2),
+        "energy_work": round(work, 2),
+        "energy_heat": round(heat, 2),
+        "energy_available": round(energy_next, 2),
+        "growth_cost": round(growth_cost, 2),
+        "growth_allowed": "YES" if energy_next >= growth_cost else "NO",
+    }
+
+
+def build_ecg_series(postnatal_days: int, points: int = 100) -> list[float]:
+    base = 110 + min(postnatal_days, 30) * 0.2
+    series = []
+    for idx in range(points):
+        drift = 6 * math.sin((idx + postnatal_days) / 6.5)
+        flutter = 3 * math.sin((idx + postnatal_days) / 2.9)
+        series.append(max(85, min(160, base + drift + flutter)))
+    return series
 
 # --------------------------------------------------
 # SIDEBAR CONTROLS

@@ -1,51 +1,52 @@
 {
-  "tick": 1,
+  "tick": 2,
   "season": "Seed",
   "population": 4,
-  "dominant_choice": "secure",
+  "dominant_choice": "bond",
   "resources": {
-    "food": 0.62,
-    "materials": 0.46,
-    "knowledge": 0.42,
-    "culture": 0.35,
-    "security": 0.73,
-    "spirit": 0.59
+    "food": 0.69,
+    "materials": 0.48,
+    "knowledge": 0.56,
+    "culture": 0.51,
+    "security": 0.84,
+    "spirit": 0.77
   },
-  "avg_wisdom": 0.44,
+  "avg_wisdom": 0.46,
   "dilemmas": [
-    "Life is stable enough for choice, but every calm season hides a future cost."
+    "New ideas are ready. The village can risk building something lasting."
   ],
-  "story": "Tick 1: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+  "story": "Tick 2: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
   "recent_events": [
-    "Tick 1: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery."
+    "Tick 1: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
+    "Tick 2: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery."
   ],
   "world_context": {
     "weather": "clear",
     "light": "day",
-    "time_world": 1.0,
-    "time_internal": 1,
-    "energy": 7.7,
-    "strain": 0.95
+    "time_world": 2.0,
+    "time_internal": 2,
+    "energy": 8.0,
+    "strain": 0.2
   },
   "citizens": [
     {
       "name": "Ari",
       "role": "Grower",
-      "choice": "eat",
-      "reason": "food stores feel too low for comfort",
-      "vitality": 0.75,
-      "hunger": 0.79,
-      "belonging": 0.6,
+      "choice": "secure",
+      "reason": "danger feels close and the village needs protection",
+      "vitality": 0.71,
+      "hunger": 0.76,
+      "belonging": 0.59,
       "curiosity": 0.32
     },
     {
       "name": "Mira",
       "role": "Builder",
-      "choice": "secure",
-      "reason": "danger feels close and the village needs protection",
-      "vitality": 0.64,
-      "hunger": 0.56,
-      "belonging": 0.46,
+      "choice": "bond",
+      "reason": "the settlement needs trust to stay alive",
+      "vitality": 0.6,
+      "hunger": 0.53,
+      "belonging": 0.59,
       "curiosity": 0.41
     },
     {
@@ -53,129 +54,23 @@
       "role": "Thinker",
       "choice": "learn",
       "reason": "curiosity is pulling life toward discovery",
-      "vitality": 0.53,
-      "hunger": 0.49,
-      "belonging": 0.43,
-      "curiosity": 0.65
+      "vitality": 0.49,
+      "hunger": 0.46,
+      "belonging": 0.42,
+      "curiosity": 0.57
     },
     {
       "name": "Tala",
       "role": "Carer",
-      "choice": "secure",
-      "reason": "danger feels close and the village needs protection",
-      "vitality": 0.67,
-      "hunger": 0.6,
-      "belonging": 0.75,
+      "choice": "bond",
+      "reason": "the settlement needs trust to stay alive",
+      "vitality": 0.63,
+      "hunger": 0.57,
+      "belonging": 0.88,
       "curiosity": 0.39
     }
   ],
-  "identity": "d17c8de4-11bf-4faf-8acc-8abaf49e12cd",
+  "identity": "2420fd6f-23d9-46b8-9d45-efab2e365351",
   "pulse_alive": true,
-  "memory": [
-    {
-      "event": {
-        "type": "pain_withdrawal",
-        "strain": 0.85,
-        "body_state": {
-          "orientation": {
-            "action": {
-              "gross_motor": "withdraw_limb"
-            }
-          }
-        },
-        "world": {
-          "energy": 10.0,
-          "strain": 0.85,
-          "last_action": {
-            "gross_motor": "withdraw_limb"
-          },
-          "last_sensation": {
-            "weather": "clear",
-            "light": "day",
-            "regulation": "reduce_activity"
-          },
-          "time": 1.0,
-          "current_place": null,
-          "known_places": [],
-          "civilisation": {
-            "tick": 1,
-            "season": "Seed",
-            "population": 4,
-            "dominant_choice": "secure",
-            "resources": {
-              "food": 0.62,
-              "materials": 0.46,
-              "knowledge": 0.42,
-              "culture": 0.35,
-              "security": 0.73,
-              "spirit": 0.59
-            },
-            "avg_wisdom": 0.44,
-            "dilemmas": [
-              "Life is stable enough for choice, but every calm season hides a future cost."
-            ],
-            "story": "Tick 1: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery.",
-            "recent_events": [
-              "Tick 1: In Seed season under clear skies, Sol the Thinker chose to learn because curiosity is pulling life toward discovery."
-            ],
-            "world_context": {
-              "weather": "clear",
-              "light": "day",
-              "time_world": 1.0,
-              "time_internal": 1,
-              "energy": 10.0,
-              "strain": 0.85
-            },
-            "citizens": [
-              {
-                "name": "Ari",
-                "role": "Grower",
-                "choice": "eat",
-                "reason": "food stores feel too low for comfort",
-                "vitality": 0.75,
-                "hunger": 0.79,
-                "belonging": 0.6,
-                "curiosity": 0.32
-              },
-              {
-                "name": "Mira",
-                "role": "Builder",
-                "choice": "secure",
-                "reason": "danger feels close and the village needs protection",
-                "vitality": 0.64,
-                "hunger": 0.56,
-                "belonging": 0.46,
-                "curiosity": 0.41
-              },
-              {
-                "name": "Sol",
-                "role": "Thinker",
-                "choice": "learn",
-                "reason": "curiosity is pulling life toward discovery",
-                "vitality": 0.53,
-                "hunger": 0.49,
-                "belonging": 0.43,
-                "curiosity": 0.65
-              },
-              {
-                "name": "Tala",
-                "role": "Carer",
-                "choice": "secure",
-                "reason": "danger feels close and the village needs protection",
-                "vitality": 0.67,
-                "hunger": 0.6,
-                "belonging": 0.75,
-                "curiosity": 0.39
-              }
-            ]
-          }
-        },
-        "time_internal": 1,
-        "time_real": 6.849999772384763e-05,
-        "time_world": 1.0
-      },
-      "time": "2026-04-01T14:13:00.604990+00:00",
-      "salience": 1.0
-    }
-  ]
+  "memory": []
 }
