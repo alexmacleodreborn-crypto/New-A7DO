@@ -98,6 +98,9 @@ if "pregnancy_running" not in st.session_state:
 if "auto_run" not in st.session_state:
     st.session_state.auto_run = False
 
+if "postnatal_age_tick_buffer" not in st.session_state:
+    st.session_state.postnatal_age_tick_buffer = 0
+
 life = st.session_state.life
 human = st.session_state.human_development
 care_bridge = st.session_state.care_bridge
@@ -261,6 +264,32 @@ def advance_pregnancy(days: int = 1) -> None:
     return snapshot
 
 
+def sustain_postnatal_life() -> None:
+    if life.energy.level() < 7.5:
+        life.energy.replenish(3.5)
+    if life.overload.strain > 0.2:
+        life.overload.recover(0.12)
+    if not life.pulse.is_alive() and human.is_born:
+        life.energy.replenish(5.0)
+        life.pulse.set_state(life.pulse.ALIVE)
+        st.session_state.dashboard_messages.append(
+            {
+                "timestamp": life.clock.now(),
+                "message": "Care systems restored A7DO from postnatal exhaustion risk.",
+            }
+        )
+
+
+def advance_postnatal_age_if_due(ticks: int = 1) -> None:
+    if not human.is_born:
+        return
+    st.session_state.postnatal_age_tick_buffer += ticks
+    # Slow postnatal aging: 1 biological day every 12 life ticks.
+    while st.session_state.postnatal_age_tick_buffer >= 12:
+        st.session_state.postnatal_age_tick_buffer -= 12
+        advance_pregnancy(1)
+
+
 def pregnancy_trimester(weeks: float) -> int:
     if weeks < 13:
         return 1
@@ -378,6 +407,8 @@ st.sidebar.title("🧠 A7DO Control")
 if st.sidebar.button("🔘 Tick (1)"):
     if human.is_born:
         life.tick()
+        sustain_postnatal_life()
+        advance_postnatal_age_if_due(1)
     else:
         advance_pregnancy(1)
 
@@ -433,6 +464,8 @@ if st.session_state.pregnancy_running:
 if st.session_state.run_ticks_remaining > 0:
     if human.is_born:
         life.tick()
+        sustain_postnatal_life()
+        advance_postnatal_age_if_due(1)
     else:
         advance_pregnancy(1)
     st.session_state.run_ticks_remaining -= 1
@@ -442,6 +475,8 @@ if st.session_state.run_ticks_remaining > 0:
 if st.session_state.auto_run:
     if human.is_born:
         life.tick()
+        sustain_postnatal_life()
+        advance_postnatal_age_if_due(1)
     else:
         advance_pregnancy(1)
     time.sleep(auto_sleep / 1000.0)

@@ -33,7 +33,10 @@ class HumanDevelopment:
     def advance_days(self, days: int = 1) -> dict:
         for _ in range(days):
             self.biological_days += 1
-            self.gestational_weeks += 1.0 / 7.0
+            if not self.is_born:
+                self.gestational_weeks += 1.0 / 7.0
+            else:
+                self.gestational_weeks = self.birth_weeks
             self.route_index = (self.route_index + 1) % len(MOTHER_ROUTE)
             self.mother_location = MOTHER_ROUTE[self.route_index]
             self.recent_events.append(
@@ -43,6 +46,11 @@ class HumanDevelopment:
                 self.is_born = True
                 self.recent_events.append(
                     f"Day {self.biological_days}: Birth readiness reached at {self.current_building()['label']}."
+                )
+            elif self.is_born:
+                profile = self.postnatal_profile()
+                self.recent_events.append(
+                    f"Day {self.biological_days}: A7DO is in {profile['life_phase']} stage with {profile['speech_stage']}."
                 )
         self.recent_events = self.recent_events[-12:]
         return self.snapshot()

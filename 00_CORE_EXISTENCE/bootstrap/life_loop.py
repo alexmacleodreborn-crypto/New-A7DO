@@ -135,6 +135,12 @@ CivilisationSim = load_module(
     "civilisation",
     "a7do_civilisation.py",
 ).CivilisationSim
+dashboard_interface_mod = load_module(
+    "interfaces_dashboard",
+    "interfaces/dashboard.py",
+)
+start_dashboard = dashboard_interface_mod.start_dashboard
+record_state_snapshot = dashboard_interface_mod.record_state_snapshot
 
 
 class LifeLoop:
@@ -395,6 +401,7 @@ class LifeLoop:
                     "memory": self.memory.recent(5),
                 }
             )
+            record_state_snapshot(self)
 
             # Memory decay
             if self._memory_allowed(allowed):
@@ -405,6 +412,12 @@ class LifeLoop:
             self.pulse.set_state("dead")
 
     def run(self):
+        try:
+            start_dashboard(self)
+            print("Dashboard running at http://localhost:8000")
+        except Exception as e:
+            print(f"Dashboard failed: {e}")
+
         while self.pulse.is_alive():
             self.tick()
             time.sleep(0.1)
